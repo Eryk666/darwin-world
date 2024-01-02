@@ -46,7 +46,7 @@ public class EarthMap {
         //left or right genes
         List<Integer> genes = new ArrayList<>();
         //test if left and right give the same amounts of genes !!!!!!!!!!!!!!!!!!!!!!!
-        if(r.nextInt(2) == 1){
+        if(r.nextBoolean()){
             //left
             for (int i = 0; i < ratio; i++) {
                 genes.add(nonBinaryParent1.getGenes().get(i));
@@ -79,13 +79,123 @@ public class EarthMap {
         nonBinaryParent1.setEnergy(nonBinaryParent1.getEnergy()-energyPerParentInSex);
         nonBinaryParent2.setEnergy(nonBinaryParent2.getEnergy()-energyPerParentInSex);
     }
+
     public void growGrass(){
+        Random r = new Random();
         //calculating equator
         int divider = mapBoundary.upperRight().y()-mapBoundary.bottomLeft().y()/5;
-        Boundary middle = new Boundary(new Vector2d(this.mapBoundary.bottomLeft().x(),
+        Boundary equator = new Boundary(new Vector2d(this.mapBoundary.bottomLeft().x(),
                                             this.mapBoundary.bottomLeft().y()+divider*2)
                                       ,new Vector2d(this.mapBoundary.upperRight().x(),
                                             this.mapBoundary.bottomLeft().y()+divider*3));
-        //finish - DEFAULT CONFIGURATION
+        for (int i = 0; i < this.grassGrowAmount; i++) {
+            Vector2d position;
+            if(i % 5 == 0){
+                //outside equator
+                if(r.nextBoolean()){
+                    position = new Vector2d(r.nextInt(this.mapBoundary.bottomLeft().x(),this.mapBoundary.upperRight().x()),
+                                            r.nextInt(this.mapBoundary.bottomLeft().y(),equator.bottomLeft().y()));
+                }else{
+                    position = new Vector2d(r.nextInt(this.mapBoundary.bottomLeft().x(),this.mapBoundary.upperRight().x()),
+                                            r.nextInt(equator.upperRight().y(),this.mapBoundary.upperRight().y()));
+                }
+            }else{
+                //inside equator
+                position = new Vector2d(r.nextInt(equator.bottomLeft().x(),equator.upperRight().x()),
+                        r.nextInt(equator.bottomLeft().y(),equator.upperRight().y()));
+            }
+            this.grasses.put(position, new Grass(position));
+        }
+    }
+
+    //opposite of sex
+    public void GrimReaper(){
+        this.animals.forEach((position,animal)->{
+            if(animal.getEnergy() <= 0){
+                this.animals.remove(position,animal);
+            }
+        });
+    }
+
+    public void moveAnimals(){
+        this.animals.forEach((position,animal) -> {
+            try {
+                animal.move();
+            }catch (GeneOutOfRangeException ex){
+                System.err.println(ex);
+            }
+        });
+    }
+
+    //mmm yummy
+    public void attemptEatGrass(){
+        //finding the strongest animal for each position
+        Map<Vector2d, Animal> strongestAnimals = new HashMap<>();
+        this.animals.forEach((position,animal) -> {
+            if(strongestAnimals.get(position) == null){
+                strongestAnimals.put(position,animal);
+            } else if (determineStrongestAnimal(strongestAnimals.get(position),animal)) {
+                strongestAnimals.remove(position);
+                strongestAnimals.put(position,animal);
+            }
+        });
+
+        //attempting to eat grass for strongest animals
+        strongestAnimals.forEach((position,animal)->{
+            //checking if there is any grass on that position
+            if(this.grasses.get(position) != null){
+                animal.eatGrass(this.energyPerGrass);
+                //removing the grass
+                this.grasses.remove(position);
+            }
+        });
+    }
+
+    //returns True if Pretender should take the spot as the strongest
+    public boolean determineStrongestAnimal(Animal rat, Animal ratPretender){
+        //energy
+        if(rat.getEnergy() > ratPretender.getEnergy()){
+            return false;
+        } else if (rat.getEnergy() < ratPretender.getEnergy()) {
+            return true;
+        }
+        //age
+        if(rat.getAge() > ratPretender.getAge()){
+            return false;
+        } else if (rat.getAge() < ratPretender.getAge()){
+            return true;
+        }
+        //children Amount
+        if(rat.getChildrenAmount() > ratPretender.getChildrenAmount()){
+            return false;
+        } else if (rat.getChildrenAmount() < ratPretender.getChildrenAmount()) {
+            return true;
+        }
+        //random
+        return (new Random()).nextBoolean();
+    }
+
+    public void attemptSex(){
+        //todo:
+        //1. create order in positions (best by determineStrongestAnimal)
+        //2. use sex function in pairs of animals (1,2),(3,4),...
+
+        Map<Vector2d, ArrayList<Animal>> sortedAnimals = new HashMap<>();
+        this.animals.forEach((position,animal) -> {
+            if(sortedAnimals.get(position) == null){
+                sortedAnimals.put(position,new ArrayList<>());
+                sortedAnimals.get(position).add(animal);
+            }else{
+                for(int i = 0; i < sortedAnimals.get(position).size(); i++) {
+                    if (determineStrongestAnimal(sortedAnimals.get(position).get(i), animal)) {
+                        sortedAnimals.get(position).add(i, animal);
+                        break;
+                    }
+                }
+            }
+        });
+        sortedAnimals.forEach((position,list) -> {
+            //do point nr 2.
+        });
     }
 }

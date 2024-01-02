@@ -9,14 +9,17 @@ public class Animal {
     private MapDirection direction;
     private int energy;
     private final List<Integer> genes;
-
+    private int age;
     private int currentGene;
+    private int childrenAmount;
 
     public Animal(Vector2d position, int energy, List<Integer> genes) {
         this.position = position;
         this.energy = energy;
         this.genes = genes;
         this.direction = MapDirection.NORTH;
+        this.age = 0;
+        this.childrenAmount = 0;
         rotateAnimal((int)(Math.random()*8)); //random number between 0 and 7
 
         //negative index means that animal is executing genes in reverse order
@@ -27,7 +30,7 @@ public class Animal {
     }
 
 
-    //getters
+    //getters&setters
     public Vector2d getPosition() {
         return position;
     }
@@ -48,6 +51,14 @@ public class Animal {
         return currentGene;
     }
 
+    public int getAge(){
+        return age;
+    }
+
+    public int getChildrenAmount(){
+        return childrenAmount;
+    }
+
     public void setPosition(Vector2d position) {
         this.position = position;
     }
@@ -62,6 +73,14 @@ public class Animal {
 
     public void setCurrentGene(int currentGene) {
         this.currentGene = currentGene;
+    }
+
+    public void setAge(int age){
+        this.age = age;
+    }
+
+    public void setChildrenAmount(int childrenAmount){
+        this.childrenAmount = childrenAmount;
     }
 
     //method used to rotate the animal clockwise
@@ -98,6 +117,9 @@ public class Animal {
 
         //energy usage
         this.energy--;
+
+        //aging
+        this.age++;
 
         //changing the gene
         this.currentGene++;
