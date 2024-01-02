@@ -2,6 +2,7 @@ package agh.ics.oop.model;
 
 
 import java.util.List;
+import java.util.Random;
 
 public class Animal {
     private Vector2d position;
@@ -20,7 +21,9 @@ public class Animal {
 
         //negative index means that animal is executing genes in reverse order
         //for example: -7 means that is on sixth (because of index 0) gene and going left
-        this.currentGene = (int)(Math.random()*genes.size()*2) - genes.size();
+        //yep math.random is ass because of 0 my beloved number
+        //replaced with nextInt
+        this.currentGene = (new Random()).nextInt(this.genes.size()*2) - this.genes.size();
     }
 
 
@@ -45,6 +48,21 @@ public class Animal {
         return currentGene;
     }
 
+    public void setPosition(Vector2d position) {
+        this.position = position;
+    }
+
+    public void setDirection(MapDirection direction) {
+        this.direction = direction;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
+    }
+
+    public void setCurrentGene(int currentGene) {
+        this.currentGene = currentGene;
+    }
 
     //method used to rotate the animal clockwise
     private void rotateAnimal(int times){
@@ -56,14 +74,23 @@ public class Animal {
     }
 
     //method that  used to rotate animal and move him by unit of direction
-    public void move(){
-        //rotation
+    public void move() throws GeneOutOfRangeException {
+
+        //getting gene
+        int gene;
         if(this.currentGene < 0){
             //negative numbers
-            rotateAnimal(this.genes.get((currentGene*(-1)) - 1));
+            gene = this.genes.get((this.currentGene*(-1)) - 1);
         }else{
             //positive numbers
-            rotateAnimal(this.genes.get(this.currentGene));
+            gene = this.genes.get(this.currentGene);
+        }
+
+        //rotation
+        if(gene >= 0 && gene <= 7) {
+            rotateAnimal(gene);
+        }else{
+            throw new GeneOutOfRangeException(gene);
         }
 
         //movement (variant "Kula ziemska" accounted in map class)
@@ -74,9 +101,13 @@ public class Animal {
 
         //changing the gene
         this.currentGene++;
-        if(this.currentGene == genes.size() + 1){
+        if(this.currentGene == genes.size()){
             this.currentGene = this.currentGene*(-1);
         }
+    }
+
+    public void eatGrass(int energy){
+        this.energy += energy;
     }
 
 }
