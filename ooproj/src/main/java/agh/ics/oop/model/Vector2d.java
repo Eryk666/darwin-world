@@ -33,11 +33,6 @@ public record Vector2d(int x, int y) {
         return new Vector2d(Math.min(x, other.x()), Math.min(y, other.y()));
     }
 
-    //probably redundant, but left out in case
-    /*public Vector2d opposite(){
-        return new Vector2d(x*(-1), y*(-1));
-    }*/
-
 
     @Override
     public boolean equals(Object o) {

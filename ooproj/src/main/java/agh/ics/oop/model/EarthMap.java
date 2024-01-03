@@ -5,12 +5,10 @@ import java.util.*;
 
 
 
-public class EarthMap {
+public class EarthMap implements MapInterface {
     private final int energyPerGrass;
 
     private final int energyPerParentInSex;
-
-    private final int grassGrowAmount;
 
     private final Map<Vector2d,Animal> animals;
 
@@ -19,21 +17,31 @@ public class EarthMap {
     private final Boundary mapBoundary;
 
 
-
-    public EarthMap(List<Animal> animals,int energyPerGrass, int energyPerParentInSex, int grassGrowAmount, Boundary mapBoundary) {
+    public EarthMap(List<Animal> animals,int energyPerGrass, int energyPerParentInSex,
+                    int initialGrowthAmount, Boundary mapBoundary) {
         this.animals = new HashMap<>();
         animals.forEach(animal -> this.animals.put(animal.getPosition(),animal));
         this.energyPerGrass = energyPerGrass;
         this.energyPerParentInSex = energyPerParentInSex;
-        this.grassGrowAmount = grassGrowAmount;
         this.mapBoundary = mapBoundary;
         this.grasses = new HashMap<>();
-        growGrass();
+        growGrass(initialGrowthAmount);
     }
+
+    //Usable getters/setters
+
+
+    public Map<Vector2d, Grass> getGrasses() {
+        return grasses;
+    }
+    public Boundary getMapBoundary() {
+        return mapBoundary;
+    }
+
     //public are debatable here
     public void spawnAnimal(Vector2d position, int energy, List<Integer> genes){
-        Animal pet = new Animal(position,energy,genes);
-        animals.put(position,pet);
+        Animal rat = new Animal(position,energy,genes);
+        animals.put(position,rat);
     }
     //I have no idea how this works, I study at AGH ComputerScience
     public void sex(Animal nonBinaryParent1, Animal nonBinaryParent2){
@@ -74,37 +82,73 @@ public class EarthMap {
         for (int i = 0; i < mutationAmount; i++){
             genes.set(indices.get(i),r.nextInt(8));
         }
-        //Now to the fun stuff 😳
+        //Now to the fun stuff
         spawnAnimal(nonBinaryParent1.getPosition(),this.energyPerParentInSex*2, genes);
         nonBinaryParent1.setEnergy(nonBinaryParent1.getEnergy()-energyPerParentInSex);
         nonBinaryParent2.setEnergy(nonBinaryParent2.getEnergy()-energyPerParentInSex);
     }
 
-    public void growGrass(){
-        Random r = new Random();
-        //calculating equator
+    public void growGrass(int grassAmount){
+        //1. Generate equator area
         int divider = mapBoundary.upperRight().y()-mapBoundary.bottomLeft().y()/5;
         Boundary equator = new Boundary(new Vector2d(this.mapBoundary.bottomLeft().x(),
                                             this.mapBoundary.bottomLeft().y()+divider*2)
                                       ,new Vector2d(this.mapBoundary.upperRight().x(),
                                             this.mapBoundary.bottomLeft().y()+divider*3));
-        for (int i = 0; i < this.grassGrowAmount; i++) {
-            Vector2d position;
-            if(i % 5 == 0){
-                //outside equator
-                if(r.nextBoolean()){
-                    position = new Vector2d(r.nextInt(this.mapBoundary.bottomLeft().x(),this.mapBoundary.upperRight().x()),
-                                            r.nextInt(this.mapBoundary.bottomLeft().y(),equator.bottomLeft().y()));
-                }else{
-                    position = new Vector2d(r.nextInt(this.mapBoundary.bottomLeft().x(),this.mapBoundary.upperRight().x()),
-                                            r.nextInt(equator.upperRight().y(),this.mapBoundary.upperRight().y()));
+
+        //2. Create Array of non grass spaces inside equator
+        int width = this.mapBoundary.upperRight().x()-this.mapBoundary.bottomLeft().x()+1;
+        int equatorHeight = equator.upperRight().y()-equator.bottomLeft().y()+1;
+        ArrayList<Vector2d> nonGrassEquatorPositions = new ArrayList<>();
+        for (int i = 0; i < width; i++){
+            for (int j =0; j < equatorHeight; j++){
+                Vector2d currPosition = new Vector2d(this.mapBoundary.bottomLeft().x()+i,
+                                                                equator.bottomLeft().y()+j);
+                if(this.grasses.get(currPosition) == null ){
+                    nonGrassEquatorPositions.add(currPosition);
                 }
-            }else{
-                //inside equator
-                position = new Vector2d(r.nextInt(equator.bottomLeft().x(),equator.upperRight().x()),
-                        r.nextInt(equator.bottomLeft().y(),equator.upperRight().y()));
             }
-            this.grasses.put(position, new Grass(position));
+        }
+        //3. Shuffle it
+        Collections.shuffle(nonGrassEquatorPositions);
+        //4. add grass to first 80%*grassAmount or maximum possible grass spaces from the Array
+        Iterator<Vector2d> equatorIterator = nonGrassEquatorPositions.iterator();
+        int grassAdded = 0;
+        while (equatorIterator.hasNext() && grassAdded < (grassAmount*8)/10){
+            Vector2d currentGrass = equatorIterator.next();
+            this.grasses.put(currentGrass,new Grass(currentGrass));
+            grassAdded++;
+        }
+
+        //5. Create new Array of non grass spaces outside equator
+        int lowerHeight = equator.bottomLeft().y()-this.mapBoundary.bottomLeft().y()+1;
+        int upperHeight = this.mapBoundary.upperRight().y()-equator.bottomLeft().y()+1;
+        ArrayList<Vector2d> nonGrassNonEquatorPositions = new ArrayList<>();
+        for (int i = 0; i < width; i++){
+            for (int j = 0; j < lowerHeight; j++) {
+                Vector2d currPosition = new Vector2d(this.mapBoundary.bottomLeft().x() + i,
+                        this.mapBoundary.bottomLeft().y() + j);
+                if (this.grasses.get(currPosition) == null) {
+                    nonGrassNonEquatorPositions.add(currPosition);
+                }
+            }
+            for (int j = 0; j < upperHeight; j++) {
+                Vector2d currPosition = new Vector2d(this.mapBoundary.bottomLeft().x() + i,
+                        equator.upperRight().y() + j);
+                if (this.grasses.get(currPosition) == null) {
+                    nonGrassNonEquatorPositions.add(currPosition);
+                }
+            }
+        }
+        //6. Shuffle it
+        Collections.shuffle(nonGrassNonEquatorPositions);
+        //7. add grass to first 20%*grassAmount or maximum possible grass spaces from the Array
+        Iterator<Vector2d> nonEquatorIterator = nonGrassNonEquatorPositions.iterator();
+        grassAdded = 0;
+        while(nonEquatorIterator.hasNext() && grassAdded < (grassAmount*8)/10){
+            Vector2d currPosition = nonEquatorIterator.next();
+            this.grasses.put(currPosition,new Grass(currPosition));
+            grassAdded++;
         }
     }
 
@@ -120,9 +164,21 @@ public class EarthMap {
     public void moveAnimals(){
         this.animals.forEach((position,animal) -> {
             try {
+                this.animals.remove(position,animal);
                 animal.move();
+                //fix caused by EarthMap variant
+                if (animal.getPosition().x() > mapBoundary.upperRight().x()){
+                   animal.setPosition(new Vector2d(mapBoundary.bottomLeft().x(),animal.getPosition().y()));
+                }else if (animal.getPosition().x() < mapBoundary.bottomLeft().x()){
+                    animal.setPosition(new Vector2d(mapBoundary.upperRight().x(),animal.getPosition().y()));
+                }
+                if (animal.getPosition().y() > mapBoundary.upperRight().y() ||
+                        animal.getPosition().y() < mapBoundary.bottomLeft().y()){
+                    animal.rotateAnimal(4);
+                }
+                this.animals.put(animal.getPosition(), animal);
             }catch (GeneOutOfRangeException ex){
-                System.err.println(ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -176,10 +232,6 @@ public class EarthMap {
     }
 
     public void attemptSex(){
-        //todo:
-        //1. create order in positions (best by determineStrongestAnimal)
-        //2. use sex function in pairs of animals (1,2),(3,4),...
-
         Map<Vector2d, ArrayList<Animal>> sortedAnimals = new HashMap<>();
         this.animals.forEach((position,animal) -> {
             if(sortedAnimals.get(position) == null){
@@ -194,8 +246,19 @@ public class EarthMap {
                 }
             }
         });
+        //use sex function in pairs of animals (1,2),(3,4),...
         sortedAnimals.forEach((position,list) -> {
-            //do point nr 2.
+            Iterator<Animal> iterator = list.iterator();
+            while(iterator.hasNext()){
+                Animal rat1 = iterator.next();
+                if(!iterator.hasNext()){
+                    break;
+                }
+                Animal rat2 = iterator.next();
+                sex(rat1,rat2);
+            }
         });
     }
+
+
 }

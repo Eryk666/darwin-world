@@ -22,11 +22,8 @@ public class Animal {
         this.childrenAmount = 0;
         rotateAnimal((int)(Math.random()*8)); //random number between 0 and 7
 
-        //negative index means that animal is executing genes in reverse order
-        //for example: -7 means that is on sixth (because of index 0) gene and going left
-        //yep math.random is ass because of 0 my beloved number
-        //replaced with nextInt
-        this.currentGene = (new Random()).nextInt(this.genes.size()*2) - this.genes.size();
+
+        this.currentGene = (new Random()).nextInt(this.genes.size());
     }
 
 
@@ -84,7 +81,7 @@ public class Animal {
     }
 
     //method used to rotate the animal clockwise
-    private void rotateAnimal(int times){
+    public void rotateAnimal(int times){
         MapDirection tmpDirection = this.direction;
         for(int i = 0 ; i < times; i++){
             tmpDirection = tmpDirection.next();
@@ -96,14 +93,7 @@ public class Animal {
     public void move() throws GeneOutOfRangeException {
 
         //getting gene
-        int gene;
-        if(this.currentGene < 0){
-            //negative numbers
-            gene = this.genes.get((this.currentGene*(-1)) - 1);
-        }else{
-            //positive numbers
-            gene = this.genes.get(this.currentGene);
-        }
+        int gene = this.genes.get(this.currentGene);
 
         //rotation
         if(gene >= 0 && gene <= 7) {
@@ -124,7 +114,7 @@ public class Animal {
         //changing the gene
         this.currentGene++;
         if(this.currentGene == genes.size()){
-            this.currentGene = this.currentGene*(-1);
+            this.currentGene = 0;
         }
     }
 
@@ -132,4 +122,17 @@ public class Animal {
         this.energy += energy;
     }
 
+    @Override
+    public String toString() {
+        return switch (this.direction){
+            case NORTH -> "N";
+            case NORTH_EAST -> "NE";
+            case EAST -> "E";
+            case SOUTH_EAST -> "SE";
+            case SOUTH -> "S";
+            case SOUTH_WEST -> "SW";
+            case WEST -> "W";
+            case NORTH_WEST -> "NW";
+        };
+    }
 }
