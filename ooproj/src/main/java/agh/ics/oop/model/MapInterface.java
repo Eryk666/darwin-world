@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.animal.Animal;
+
 import java.util.List;
 
 public interface MapInterface {

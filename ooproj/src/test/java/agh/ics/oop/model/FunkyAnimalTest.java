@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.animal.Animal;
+import agh.ics.oop.model.animal.FunkyAnimal;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

@@ -1,4 +1,6 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.animal;
+
+import agh.ics.oop.model.Vector2d;
 
 import java.util.List;
 import java.util.Random;
@@ -32,5 +34,16 @@ public class FunkyAnimal extends Animal{
         if(this.getCurrentGene() == getGenes().size()){
             this.setCurrentGene(this.getCurrentGene()*(-1));
         }
+    }
+
+    @Override
+    public Animal reproduce(Animal mate, int reproductionEnergyCost) {
+        List<Integer> genes = determineBabyGenes(mate);
+        Animal babyAnimal = new FunkyAnimal(this.position, reproductionEnergyCost * 2, genes);
+
+        this.energy -= reproductionEnergyCost;
+        mate.energy -= reproductionEnergyCost;
+
+        return babyAnimal;
     }
 }

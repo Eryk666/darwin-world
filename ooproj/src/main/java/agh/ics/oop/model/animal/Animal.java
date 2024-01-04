@@ -1,29 +1,33 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.animal;
 
 
+import agh.ics.oop.model.GeneOutOfRangeException;
+import agh.ics.oop.model.MapDirection;
+import agh.ics.oop.model.Vector2d;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public class Animal {
-    private Vector2d position;
-    private MapDirection direction;
-    private int energy;
-    private final List<Integer> genes;
-    private int age;
-    private int currentGene;
-    private int childrenAmount;
+    protected Vector2d position;
+    protected MapDirection direction;
+    protected int energy;
+    protected final List<Integer> genes;
+    protected int currentGene;
+    protected int age;
+    protected int childrenAmount;
 
     public Animal(Vector2d position, int energy, List<Integer> genes) {
         this.position = position;
+        this.direction = MapDirection.NORTH;
         this.energy = energy;
         this.genes = genes;
-        this.direction = MapDirection.NORTH;
+        this.currentGene = (new Random()).nextInt(this.genes.size());
         this.age = 0;
         this.childrenAmount = 0;
-        rotateAnimal((int)(Math.random()*8)); //random number between 0 and 7
-
-
-        this.currentGene = (new Random()).nextInt(this.genes.size());
+        rotateAnimal((int)(Math.random()*8)); // Random number between 0 and 7
     }
 
 
@@ -80,7 +84,7 @@ public class Animal {
         this.childrenAmount = childrenAmount;
     }
 
-    //method used to rotate the animal clockwise
+    // Method used to rotate the animal clockwise
     public void rotateAnimal(int times){
         MapDirection tmpDirection = this.direction;
         for(int i = 0 ; i < times; i++){
@@ -89,7 +93,7 @@ public class Animal {
         this.direction = tmpDirection;
     }
 
-    //method that  used to rotate animal and move him by unit of direction
+    // Method that  used to rotate animal and move him by unit of direction
     public void move() throws GeneOutOfRangeException {
 
         //getting gene
@@ -128,6 +132,59 @@ public class Animal {
 
     public void eatGrass(int energy){
         this.energy += energy;
+    }
+
+    public Animal reproduce(Animal mate, int reproductionEnergyCost) {
+        List<Integer> genes = determineBabyGenes(mate);
+        Animal babyAnimal = new Animal(this.position, reproductionEnergyCost * 2, genes);
+
+        this.energy -= reproductionEnergyCost;
+        mate.energy -= reproductionEnergyCost;
+
+        return babyAnimal;
+    }
+
+    protected List<Integer> determineBabyGenes(Animal mate) {
+        Random random = new Random();
+        List<Integer> genes = new ArrayList<>();
+
+        //ratio
+        int ratio = (this.energy / mate.energy) * this.genes.size();
+
+        //test if left and right give the same amounts of genes !!!!!!!!!!!!!!!!!!!!!!!
+        if (random.nextBoolean()) {
+            //left
+            for (int i = 0; i < ratio; i++) {
+                genes.add(this.genes.get(i));
+            }
+            for (int i = ratio; i < this.genes.size(); i++) {
+                genes.add(mate.genes.get(i));
+            }
+        } else {
+            //right
+            for (int i = 0; i < this.genes.size() - ratio; i++) {
+                genes.add(mate.genes.get(i));
+            }
+            for (int i = this.genes.size() - ratio; i < this.genes.size(); i++){
+                genes.add(this.genes.get(i));
+            }
+        }
+
+        //mutations
+        int mutationAmount = random.nextInt(this.genes.size() + 1);
+        ArrayList<Integer> indices = new ArrayList<>();
+
+        for (int i = 0; i < this.genes.size(); i++) {
+            indices.add(i);
+        }
+
+        Collections.shuffle(indices);
+
+        for (int i = 0; i < mutationAmount; i++) {
+            genes.set(indices.get(i), random.nextInt(8));
+        }
+
+        return genes;
     }
 
     @Override

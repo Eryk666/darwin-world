@@ -1,33 +1,25 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.worldmap;
+
+import agh.ics.oop.model.Boundary;
+import agh.ics.oop.model.GeneOutOfRangeException;
+import agh.ics.oop.model.Grass;
+import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.animal.Animal;
 
 import java.util.*;
 
 public abstract class AbstractWorldMap {
-    protected final int energyPerGrass;
-    protected final int energyPerParentInSex;
-    protected final Map<Vector2d,Animal> animals;
-    protected final Map<Vector2d,Grass> grasses;
     protected final Boundary mapBoundary;
+    protected final Map<Vector2d, Animal> animals;
+    protected final Map<Vector2d, Grass> grasses;
 
-    public AbstractWorldMap(
-            List<Animal> animals,
-            int energyPerGrass,
-            int energyPerParentInSex,
-            int initialGrowthAmount,
-            Boundary mapBoundary
-    ) {
-        this.animals = new HashMap<>();
-        animals.forEach(animal -> this.animals.put(animal.getPosition(),animal));
-        this.energyPerGrass = energyPerGrass;
-        this.energyPerParentInSex = energyPerParentInSex;
+    public AbstractWorldMap(Boundary mapBoundary) {
         this.mapBoundary = mapBoundary;
+        this.animals = new HashMap<>();
         this.grasses = new HashMap<>();
-        growGrass(initialGrowthAmount);
     }
 
-
     // Getters
-
     public Map<Vector2d, Grass> getGrasses() {
         return grasses;
     }
@@ -40,67 +32,13 @@ public abstract class AbstractWorldMap {
         return animals;
     }
 
-    public int getEnergyPerGrass() {
-        return energyPerGrass;
-    }
-
-    public int getEnergyPerParentInSex() {
-        return energyPerParentInSex;
-    }
-
     //public are debatable here
-    public void spawnAnimal(Vector2d position, int energy, List<Integer> genes){
-        Animal rat = new Animal(position,energy,genes);
-        animals.put(position,rat);
-    }
-
-    //I have no idea how this works, I study at AGH ComputerScience
-    public void sex(Animal nonBinaryParent1, Animal nonBinaryParent2){
-        //first is stronger!!!!!!!!!!!
-        Random r = new Random();
-
-        //ratio
-        int ratio = (nonBinaryParent1.getEnergy()/nonBinaryParent2.getEnergy())*nonBinaryParent1.getGenes().size();
-
-        //left or right genes
-        List<Integer> genes = new ArrayList<>();
-        //test if left and right give the same amounts of genes !!!!!!!!!!!!!!!!!!!!!!!
-        if(r.nextBoolean()){
-            //left
-            for (int i = 0; i < ratio; i++) {
-                genes.add(nonBinaryParent1.getGenes().get(i));
-            }
-            for (int i = ratio; i < nonBinaryParent1.getGenes().size(); i++){
-                genes.add(nonBinaryParent2.getGenes().get(i));
-            }
-        }else{
-            //right
-            for (int i = 0; i < nonBinaryParent1.getGenes().size() - ratio; i++) {
-                genes.add(nonBinaryParent2.getGenes().get(i));
-            }
-            for (int i = nonBinaryParent1.getGenes().size() - ratio; i < nonBinaryParent1.getGenes().size(); i++){
-                genes.add(nonBinaryParent1.getGenes().get(i));
-            }
-        }
-
-        //mutations
-        int mutationAmount = r.nextInt(nonBinaryParent1.getGenes().size());
-        ArrayList<Integer> indices = new ArrayList<>();
-        for (int i = 0; i < nonBinaryParent1.getGenes().size(); i++) {
-            indices.add(i);
-        }
-        Collections.shuffle(indices);
-        for (int i = 0; i < mutationAmount; i++){
-            genes.set(indices.get(i),r.nextInt(8));
-        }
-        //Now to the fun stuff
-        spawnAnimal(nonBinaryParent1.getPosition(),this.energyPerParentInSex*2, genes);
-        nonBinaryParent1.setEnergy(nonBinaryParent1.getEnergy()-energyPerParentInSex);
-        nonBinaryParent2.setEnergy(nonBinaryParent2.getEnergy()-energyPerParentInSex);
+    public void placeAnimal(Animal animal){
+        animals.put(animal.getPosition(), animal);
     }
 
     //opposite of sex
-    public void grimReaper(){
+    public void removeDeadAnimals(){
         this.animals.forEach((position,animal)->{
             if(animal.getEnergy() <= 0){
                 this.animals.remove(position,animal);
@@ -108,7 +46,7 @@ public abstract class AbstractWorldMap {
         });
     }
 
-    public void moveAnimals(){
+    public void movementPhase(){
         this.animals.forEach((position,animal) -> {
             try {
                 this.animals.remove(position,animal);
@@ -131,7 +69,7 @@ public abstract class AbstractWorldMap {
     }
 
     //mmm yummy
-    public void attemptEatGrass(){
+    public void feedingPhase(int energyPerGrass){
         //finding the strongest animal for each position
         Map<Vector2d, Animal> strongestAnimals = new HashMap<>();
         this.animals.forEach((position,animal) -> {
@@ -147,7 +85,7 @@ public abstract class AbstractWorldMap {
         strongestAnimals.forEach((position,animal)->{
             //checking if there is any grass on that position
             if(this.grasses.get(position) != null){
-                animal.eatGrass(this.energyPerGrass);
+                animal.eatGrass(energyPerGrass);
                 //removing the grass
                 this.grasses.remove(position);
             }
@@ -178,13 +116,13 @@ public abstract class AbstractWorldMap {
         return (new Random()).nextBoolean();
     }
 
-    public void attemptSex(){
+    public void reproductionPhase(int reproductionEnergyCost, int reproductionEnergyMinimum){
         Map<Vector2d, ArrayList<Animal>> sortedAnimals = new HashMap<>();
         this.animals.forEach((position,animal) -> {
-            if(sortedAnimals.get(position) == null){
+            if (sortedAnimals.get(position) == null) {
                 sortedAnimals.put(position,new ArrayList<>());
                 sortedAnimals.get(position).add(animal);
-            }else{
+            } else {
                 for(int i = 0; i < sortedAnimals.get(position).size(); i++) {
                     if (determineStrongestAnimal(sortedAnimals.get(position).get(i), animal)) {
                         sortedAnimals.get(position).add(i, animal);
@@ -193,7 +131,8 @@ public abstract class AbstractWorldMap {
                 }
             }
         });
-        //use sex function in pairs of animals (1,2),(3,4),...
+
+        //use reproduce function in pairs of animals (1,2),(3,4),...
         sortedAnimals.forEach((position,list) -> {
             Iterator<Animal> iterator = list.iterator();
             while(iterator.hasNext()){
@@ -202,10 +141,13 @@ public abstract class AbstractWorldMap {
                     break;
                 }
                 Animal rat2 = iterator.next();
-                sex(rat1,rat2);
+                if (rat2.getEnergy() < reproductionEnergyMinimum || rat1.getEnergy() < reproductionEnergyMinimum) {
+                    break;
+                }
+                placeAnimal(rat1.reproduce(rat2, reproductionEnergyCost));
             }
         });
     }
 
-    public void growGrass(int grassAmount) {};
+    public void growGrass(int grassAmount) {}
 }

@@ -1,5 +1,9 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.worldmap;
 
+
+import agh.ics.oop.model.Boundary;
+import agh.ics.oop.model.Grass;
+import agh.ics.oop.model.Vector2d;
 
 import java.util.*;
 
@@ -7,23 +11,21 @@ import java.util.*;
 
 public class EarthMap extends AbstractWorldMap {
     public EarthMap(
-            List<Animal> animals,
-            int energyPerGrass,
-            int energyPerParentInSex,
-            int initialGrowthAmount,
             Boundary mapBoundary
     ) {
-        super(animals, energyPerGrass, energyPerParentInSex, initialGrowthAmount, mapBoundary);
+        super(mapBoundary);
     }
 
     @Override
     public void growGrass(int grassAmount){
         //1. Generate equator area
         int divider = mapBoundary.upperRight().y()-mapBoundary.bottomLeft().y()/5;
-        Boundary equator = new Boundary(new Vector2d(this.mapBoundary.bottomLeft().x(),
-                                            this.mapBoundary.bottomLeft().y()+divider*2)
-                                      ,new Vector2d(this.mapBoundary.upperRight().x(),
-                                            this.mapBoundary.bottomLeft().y()+divider*3));
+        Boundary equator = new Boundary(
+                new Vector2d(this.mapBoundary.bottomLeft().x(),
+                this.mapBoundary.bottomLeft().y() + divider * 2),
+                new Vector2d(this.mapBoundary.upperRight().x(),
+                this.mapBoundary.bottomLeft().y() + divider * 3)
+        );
 
         //2. Create Array of non grass spaces inside equator
         int width = this.mapBoundary.upperRight().x()-this.mapBoundary.bottomLeft().x()+1;
