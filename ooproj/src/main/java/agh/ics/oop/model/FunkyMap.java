@@ -78,6 +78,4 @@ public class FunkyMap extends EarthMap{
         }
         return false;
     }
-
-
 }
