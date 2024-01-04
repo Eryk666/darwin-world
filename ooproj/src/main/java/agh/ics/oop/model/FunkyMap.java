@@ -5,9 +5,16 @@ package agh.ics.oop.model;
 import java.util.*;
 
 public class FunkyMap extends EarthMap{
-    public FunkyMap(List<Animal> animals, int energyPerGrass, int energyPerParentInSex, int initialGrowthAmount, Boundary mapBoundary) {
+    public FunkyMap(
+            List<Animal> animals,
+            int energyPerGrass,
+            int energyPerParentInSex,
+            int initialGrowthAmount,
+            Boundary mapBoundary
+    ) {
         super(animals, energyPerGrass, energyPerParentInSex, initialGrowthAmount, mapBoundary);
     }
+
     //everything the same apart from the grass growing
     @Override
     public void growGrass(int grassAmount) {
@@ -56,6 +63,7 @@ public class FunkyMap extends EarthMap{
             addedGrass++;
         }
     }
+
     private boolean isGrassNexTo(Vector2d position, Map<Vector2d,Grass> grassMap){
         //no idea how to do this other way for now;
         for(int i = -1; i <= 1; i++){
