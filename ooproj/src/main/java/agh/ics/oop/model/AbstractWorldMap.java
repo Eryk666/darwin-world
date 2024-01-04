@@ -10,11 +10,11 @@ public abstract class AbstractWorldMap {
     protected final Boundary mapBoundary;
 
     public AbstractWorldMap(
-        List<Animal> animals,
-        int energyPerGrass,
-        int energyPerParentInSex,
-        int initialGrowthAmount,
-        Boundary mapBoundary
+            List<Animal> animals,
+            int energyPerGrass,
+            int energyPerParentInSex,
+            int initialGrowthAmount,
+            Boundary mapBoundary
     ) {
         this.animals = new HashMap<>();
         animals.forEach(animal -> this.animals.put(animal.getPosition(),animal));
