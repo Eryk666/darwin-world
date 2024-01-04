@@ -89,7 +89,7 @@ public class Animal {
         this.direction = tmpDirection;
     }
 
-    //method that  used to rotate animal and move him by unit of direction
+    //method that used to rotate animal and move him by unit of direction
     public void move() throws GeneOutOfRangeException {
 
         //getting gene

@@ -95,4 +95,60 @@ public class FunkyAnimalTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    void testGetGene(){
+        ArrayList<Integer> genes = new ArrayList<>();
+        genes.add(6);
+        genes.add(2);
+        genes.add(4);
+        Animal rat = new FunkyAnimal(new Vector2d(0,0), 10, genes);
+        //removing randomness
+        rat.setCurrentGene(0);
+
+        assertEquals(6, rat.getGene());
+
+        rat.setCurrentGene(1);
+        assertEquals(2, rat.getGene());
+
+        rat.setCurrentGene(2);
+        assertEquals(4,rat.getGene());
+
+        rat.setCurrentGene(-3);
+        assertEquals(4,rat.getGene());
+
+        rat.setCurrentGene(-2);
+        assertEquals(2,rat.getGene());
+
+        rat.setCurrentGene(-1);
+        assertEquals(6,rat.getGene());
+    }
+
+    @Test
+    void testNextGene(){
+        ArrayList<Integer> genes = new ArrayList<>();
+        genes.add(6);
+        genes.add(2);
+        genes.add(4);
+        Animal rat = new FunkyAnimal(new Vector2d(0,0), 10, genes);
+        rat.setCurrentGene(0);
+
+        rat.nextGene();
+        assertEquals(1,rat.getCurrentGene());
+
+        rat.nextGene();
+        assertEquals(2,rat.getCurrentGene());
+
+        rat.nextGene();
+        assertEquals(-3,rat.getCurrentGene());
+
+        rat.nextGene();
+        assertEquals(-2,rat.getCurrentGene());
+
+        rat.nextGene();
+        assertEquals(-1,rat.getCurrentGene());
+
+        rat.nextGene();
+        assertEquals(-0,rat.getCurrentGene());
+    }
 }
