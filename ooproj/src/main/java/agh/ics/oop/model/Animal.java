@@ -93,7 +93,7 @@ public class Animal {
     public void move() throws GeneOutOfRangeException {
 
         //getting gene
-        int gene = this.genes.get(this.currentGene);
+        int gene = getGene();
 
         //rotation
         if(gene >= 0 && gene <= 7) {
@@ -112,6 +112,14 @@ public class Animal {
         this.age++;
 
         //changing the gene
+        nextGene();
+    }
+
+    public int getGene(){
+        return this.genes.get(this.currentGene);
+    }
+
+    public void nextGene(){
         this.currentGene++;
         if(this.currentGene == genes.size()){
             this.currentGene = 0;

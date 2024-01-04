@@ -153,7 +153,7 @@ public class EarthMap implements MapInterface {
     }
 
     //opposite of sex
-    public void GrimReaper(){
+    public void grimReaper(){
         this.animals.forEach((position,animal)->{
             if(animal.getEnergy() <= 0){
                 this.animals.remove(position,animal);

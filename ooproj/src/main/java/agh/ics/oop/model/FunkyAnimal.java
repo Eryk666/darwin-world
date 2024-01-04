@@ -14,9 +14,7 @@ public class FunkyAnimal extends Animal{
     }
 
     @Override
-    public void move() throws GeneOutOfRangeException {
-
-        //getting gene
+    public int getGene() {
         int gene;
         if(this.getCurrentGene() < 0){
             //negative numbers
@@ -25,24 +23,11 @@ public class FunkyAnimal extends Animal{
             //positive numbers
             gene = this.getGenes().get(this.getCurrentGene());
         }
+        return gene;
+    }
 
-        //rotation
-        if(gene >= 0 && gene <= 7) {
-            rotateAnimal(gene);
-        }else{
-            throw new GeneOutOfRangeException(gene);
-        }
-
-        //movement (variant "Kula ziemska" accounted in map class)
-        this.setPosition(this.getPosition().add(this.getDirection().toUnitVector()));
-
-        //energy usage
-        this.setEnergy(this.getEnergy()-1);
-
-        //aging
-        this.setAge(this.getAge()+1);
-
-        //changing the gene
+    @Override
+    public void nextGene() {
         this.setCurrentGene(this.getCurrentGene()+1);
         if(this.getCurrentGene() == getGenes().size()){
             this.setCurrentGene(this.getCurrentGene()*(-1));

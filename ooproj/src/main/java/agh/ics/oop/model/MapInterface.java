@@ -8,7 +8,7 @@ public interface MapInterface {
 
     void attemptSex();
     void sex(Animal nonBinaryParent1, Animal nonBinaryParent2);
-    void GrimReaper();
+    void grimReaper();
 
     void moveAnimals();
 
