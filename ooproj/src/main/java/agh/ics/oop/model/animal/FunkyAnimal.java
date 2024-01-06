@@ -12,27 +12,29 @@ public class FunkyAnimal extends Animal{
         //for example: -7 means that is on sixth (because of index 0) gene and going left
         //yep math.random is ass because of 0 my beloved number
         //replaced with nextInt
-        setCurrentGene((new Random()).nextInt(this.getGenes().size()*2) - this.getGenes().size());
+        setCurrentGeneIndex((new Random()).nextInt(this.getGenes().size()*2) - this.getGenes().size());
     }
 
     @Override
-    public int getGene() {
+    public int getCurrentGene() {
         int gene;
-        if(this.getCurrentGene() < 0){
-            //negative numbers
-            gene = this.getGenes().get((this.getCurrentGene()*(-1)) - 1);
-        }else{
-            //positive numbers
-            gene = this.getGenes().get(this.getCurrentGene());
+
+        if (currentGeneIndex < 0) {
+            // Negative numbers
+            gene = genes.get((currentGeneIndex * (-1)) - 1);
+        } else {
+            // Positive numbers
+            gene = genes.get(currentGeneIndex);
         }
+
         return gene;
     }
 
     @Override
     public void nextGene() {
-        this.setCurrentGene(this.getCurrentGene()+1);
-        if(this.getCurrentGene() == getGenes().size()){
-            this.setCurrentGene(this.getCurrentGene()*(-1));
+        currentGeneIndex++;
+        if(currentGeneIndex == genes.size()) {
+            currentGeneIndex *= (-1);
         }
     }
 

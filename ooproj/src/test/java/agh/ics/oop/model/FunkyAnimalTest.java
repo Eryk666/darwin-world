@@ -18,7 +18,7 @@ public class FunkyAnimalTest {
             //1 gene so between -1 and 0
             genes.add(7);
             Animal pet = new FunkyAnimal(new Vector2d(0,0),100,genes);
-            assertTrue(pet.getCurrentGene() >= -1 && pet.getCurrentGene() <= 0);
+            assertTrue(pet.getCurrentGeneIndex() >= -1 && pet.getCurrentGeneIndex() <= 0);
         }
         for (int i = 0; i < 10000; i++) {
             ArrayList<Integer> genes = new ArrayList<>();
@@ -26,7 +26,7 @@ public class FunkyAnimalTest {
             genes.add(7);
             genes.add(7);
             Animal pet = new FunkyAnimal(new Vector2d(0,0),100,genes);
-            assertTrue(pet.getCurrentGene() >= -2 && pet.getCurrentGene() <= 1);
+            assertTrue(pet.getCurrentGeneIndex() >= -2 && pet.getCurrentGeneIndex() <= 1);
         }
         for (int i = 0; i < 10000; i++) {
             ArrayList<Integer> genes = new ArrayList<>();
@@ -35,7 +35,7 @@ public class FunkyAnimalTest {
                 genes.add(7);
             }
             Animal pet = new FunkyAnimal(new Vector2d(0,0),100,genes);
-            assertTrue(pet.getCurrentGene() >= -1000 && pet.getCurrentGene() <= 999);
+            assertTrue(pet.getCurrentGeneIndex() >= -1000 && pet.getCurrentGeneIndex() <= 999);
         }
     }
     @Test
@@ -48,7 +48,7 @@ public class FunkyAnimalTest {
         Animal rat = new FunkyAnimal(new Vector2d(0,0), 10, genes);
         //removing randomness
         rat.setDirection(MapDirection.NORTH);
-        rat.setCurrentGene(0);
+        rat.setCurrentGeneIndex(0);
 
         try {
             //0
@@ -56,42 +56,42 @@ public class FunkyAnimalTest {
             assertEquals(new Vector2d(1, 1), rat.getPosition());
             assertEquals(MapDirection.NORTH_EAST, rat.getDirection());
             assertEquals(9, rat.getEnergy());
-            assertEquals(1,rat.getCurrentGene());
+            assertEquals(1,rat.getCurrentGeneIndex());
 
             //1
             rat.move();
             assertEquals(new Vector2d(2,0), rat.getPosition());
             assertEquals(MapDirection.SOUTH_EAST, rat.getDirection());
             assertEquals(8, rat.getEnergy());
-            assertEquals(2,rat.getCurrentGene());
+            assertEquals(2,rat.getCurrentGeneIndex());
 
             //2
             rat.move();
             assertEquals(new Vector2d(1,0), rat.getPosition());
             assertEquals(MapDirection.WEST, rat.getDirection());
             assertEquals(7, rat.getEnergy());
-            assertEquals(-3,rat.getCurrentGene());
+            assertEquals(-3,rat.getCurrentGeneIndex());
 
             //-3
             rat.move();
             assertEquals(new Vector2d(2,1), rat.getPosition());
             assertEquals(MapDirection.NORTH_EAST, rat.getDirection());
             assertEquals(6, rat.getEnergy());
-            assertEquals(-2,rat.getCurrentGene());
+            assertEquals(-2,rat.getCurrentGeneIndex());
 
             //-2
             rat.move();
             assertEquals(new Vector2d(3,0), rat.getPosition());
             assertEquals(MapDirection.SOUTH_EAST, rat.getDirection());
             assertEquals(5, rat.getEnergy());
-            assertEquals(-1,rat.getCurrentGene());
+            assertEquals(-1,rat.getCurrentGeneIndex());
 
             //-1
             rat.move();
             assertEquals(new Vector2d(3,-1), rat.getPosition());
             assertEquals(MapDirection.SOUTH, rat.getDirection());
             assertEquals(4, rat.getEnergy());
-            assertEquals(0,rat.getCurrentGene());
+            assertEquals(0,rat.getCurrentGeneIndex());
 
         }catch (GeneOutOfRangeException e){
             e.printStackTrace();

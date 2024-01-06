@@ -5,17 +5,14 @@ import agh.ics.oop.model.GeneOutOfRangeException;
 import agh.ics.oop.model.MapDirection;
 import agh.ics.oop.model.Vector2d;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Animal {
     protected Vector2d position;
     protected MapDirection direction;
     protected int energy;
     protected final List<Integer> genes;
-    protected int currentGene;
+    protected int currentGeneIndex;
     protected int age;
     protected int childrenAmount;
 
@@ -24,12 +21,11 @@ public class Animal {
         this.direction = MapDirection.NORTH;
         this.energy = energy;
         this.genes = genes;
-        this.currentGene = (new Random()).nextInt(this.genes.size());
+        this.currentGeneIndex = (new Random()).nextInt(this.genes.size());
         this.age = 0;
         this.childrenAmount = 0;
         rotateAnimal((int)(Math.random()*8)); // Random number between 0 and 7
     }
-
 
     //getters&setters
     public Vector2d getPosition() {
@@ -48,8 +44,12 @@ public class Animal {
         return genes;
     }
 
-    public int getCurrentGene() {
-        return currentGene;
+    public int getCurrentGene(){
+        return genes.get(currentGeneIndex);
+    }
+
+    public int getCurrentGeneIndex() {
+        return currentGeneIndex;
     }
 
     public int getAge(){
@@ -72,8 +72,8 @@ public class Animal {
         this.energy = energy;
     }
 
-    public void setCurrentGene(int currentGene) {
-        this.currentGene = currentGene;
+    public void setCurrentGeneIndex(int currentGeneIndex) {
+        this.currentGeneIndex = currentGeneIndex;
     }
 
     public void setAge(int age){
@@ -84,8 +84,8 @@ public class Animal {
         this.childrenAmount = childrenAmount;
     }
 
-    // Method used to rotate the animal clockwise
-    public void rotateAnimal(int times){
+    // Rotates animal clockwise
+    public void rotateAnimal(int times) {
         MapDirection tmpDirection = this.direction;
         for(int i = 0 ; i < times; i++){
             tmpDirection = tmpDirection.next();
@@ -93,40 +93,35 @@ public class Animal {
         this.direction = tmpDirection;
     }
 
-    // Method that  used to rotate animal and move him by unit of direction
+    // Rotates animal and moves it
     public void move() throws GeneOutOfRangeException {
+        // Get gene
+        int gene = getCurrentGene();
 
-        //getting gene
-        int gene = getGene();
-
-        //rotation
-        if(gene >= 0 && gene <= 7) {
+        // Rotate animal
+        if (gene >= 0 && gene <= 7) {
             rotateAnimal(gene);
-        }else{
+        } else {
             throw new GeneOutOfRangeException(gene);
         }
 
-        //movement (variant "Kula ziemska" accounted in map class)
+        // Move animal (variant "Kula ziemska" accounted in map class)
         this.position = this.position.add(this.direction.toUnitVector());
 
-        //energy usage
+        // Energy usage
         this.energy--;
 
-        //aging
+        // Aging
         this.age++;
 
-        //changing the gene
+        // Change the gene
         nextGene();
     }
 
-    public int getGene(){
-        return this.genes.get(this.currentGene);
-    }
-
     public void nextGene(){
-        this.currentGene++;
-        if(this.currentGene == genes.size()){
-            this.currentGene = 0;
+        currentGeneIndex++;
+        if (currentGeneIndex == genes.size()) {
+            currentGeneIndex = 0;
         }
     }
 
@@ -199,5 +194,33 @@ public class Animal {
             case WEST -> "W";
             case NORTH_WEST -> "NW";
         };
+    }
+
+    // True if this animal is stronger than the other,
+    // False if its weaker and random True or False if their strength is equal
+    public boolean takesPrecedence(Animal other) {
+        // Compare energy
+        if(this.energy > other.energy){
+            return true;
+        } else if (this.energy < other.energy) {
+            return false;
+        }
+
+        // Compare age
+        if(this.age > other.age){
+            return true;
+        } else if (this.age < other.age){
+            return false;
+        }
+
+        // Compare children Amount
+        if(this.childrenAmount > other.childrenAmount){
+            return true;
+        } else if (this.childrenAmount < other.childrenAmount) {
+            return false;
+        }
+
+        // Choose random
+        return (new Random()).nextBoolean();
     }
 }
