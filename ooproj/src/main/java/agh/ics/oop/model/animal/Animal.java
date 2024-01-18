@@ -14,7 +14,7 @@ public class Animal {
     protected final List<Integer> genes;
     protected int currentGeneIndex;
     protected int age;
-    protected int childrenAmount;
+    protected ArrayList<Animal> children;
 
     public Animal(Vector2d position, int energy, List<Integer> genes) {
         this.position = position;
@@ -23,7 +23,7 @@ public class Animal {
         this.genes = genes;
         this.currentGeneIndex = (new Random()).nextInt(this.genes.size());
         this.age = 0;
-        this.childrenAmount = 0;
+        this.children = new ArrayList<>();
         rotateAnimal((int)(Math.random()*8)); // Random number between 0 and 7
     }
 
@@ -57,7 +57,16 @@ public class Animal {
     }
 
     public int getChildrenAmount(){
-        return childrenAmount;
+        return children.size();
+    }
+
+    //me when dfs
+    public int getDescendantsAmount(){
+        int descendantsAmount = 0;
+        for (Animal child : children) {
+            descendantsAmount += child.getDescendantsAmount() + 1;
+        }
+        return descendantsAmount;
     }
 
     public void setPosition(Vector2d position) {
@@ -80,9 +89,6 @@ public class Animal {
         this.age = age;
     }
 
-    public void setChildrenAmount(int childrenAmount){
-        this.childrenAmount = childrenAmount;
-    }
 
     // Rotates animal clockwise
     public void rotateAnimal(int times) {
@@ -136,6 +142,9 @@ public class Animal {
         this.energy -= reproductionEnergyCost;
         mate.energy -= reproductionEnergyCost;
 
+        this.children.add(babyAnimal);
+        mate.children.add(babyAnimal);
+
         return babyAnimal;
     }
 
@@ -178,7 +187,6 @@ public class Animal {
         for (int i = 0; i < mutationAmount; i++) {
             genes.set(indices.get(i), random.nextInt(8));
         }
-
         return genes;
     }
 
@@ -214,9 +222,9 @@ public class Animal {
         }
 
         // Compare children Amount
-        if(this.childrenAmount > other.childrenAmount){
+        if(this.getChildrenAmount() > other.getChildrenAmount()){
             return true;
-        } else if (this.childrenAmount < other.childrenAmount) {
+        } else if (this.getChildrenAmount() < other.getChildrenAmount()) {
             return false;
         }
 

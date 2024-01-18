@@ -46,6 +46,9 @@ public class FunkyAnimal extends Animal{
         this.energy -= reproductionEnergyCost;
         mate.energy -= reproductionEnergyCost;
 
+        this.children.add(babyAnimal);
+        mate.children.add(babyAnimal);
+
         return babyAnimal;
     }
 }
