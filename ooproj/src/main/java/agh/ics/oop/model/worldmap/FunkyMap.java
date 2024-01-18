@@ -1,18 +1,18 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.worldmap;
 
 
+
+import agh.ics.oop.model.Boundary;
+import agh.ics.oop.model.Grass;
+import agh.ics.oop.model.Vector2d;
 
 import java.util.*;
 
 public class FunkyMap extends EarthMap{
     public FunkyMap(
-            List<Animal> animals,
-            int energyPerGrass,
-            int energyPerParentInSex,
-            int initialGrowthAmount,
             Boundary mapBoundary
     ) {
-        super(animals, energyPerGrass, energyPerParentInSex, initialGrowthAmount, mapBoundary);
+        super(mapBoundary);
     }
 
     //everything the same apart from the grass growing
@@ -20,7 +20,7 @@ public class FunkyMap extends EarthMap{
     public void growGrass(int grassAmount) {
 
         //get grass Map
-        Map<Vector2d,Grass> grassMap = getGrasses();
+        Map<Vector2d, Grass> grassMap = getGrasses();
         Boundary bound = getMapBoundary();
         //in case of grasses being empty
         if(grassMap.isEmpty()){

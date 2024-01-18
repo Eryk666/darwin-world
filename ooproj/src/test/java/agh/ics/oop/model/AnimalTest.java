@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.animal.Animal;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class AnimalTest {
             //1 gene so between -1 and 0
             genes.add(7);
             Animal pet = new Animal(new Vector2d(0,0),100,genes);
-            assertEquals(0, pet.getCurrentGene());
+            assertEquals(0, pet.getCurrentGeneIndex());
         }
         for (int i = 0; i < 10000; i++) {
             ArrayList<Integer> genes = new ArrayList<>();
@@ -25,7 +26,7 @@ public class AnimalTest {
             genes.add(7);
             genes.add(7);
             Animal pet = new Animal(new Vector2d(0,0),100,genes);
-            assertTrue(pet.getCurrentGene() >= 0 && pet.getCurrentGene() <= 1);
+            assertTrue(pet.getCurrentGeneIndex() >= 0 && pet.getCurrentGeneIndex() <= 1);
         }
         for (int i = 0; i < 10000; i++) {
             ArrayList<Integer> genes = new ArrayList<>();
@@ -34,7 +35,7 @@ public class AnimalTest {
                 genes.add(7);
             }
             Animal pet = new Animal(new Vector2d(0,0),100,genes);
-            assertTrue(pet.getCurrentGene() >= 0 && pet.getCurrentGene() <= 999);
+            assertTrue(pet.getCurrentGeneIndex() >= 0 && pet.getCurrentGeneIndex() <= 999);
         }
     }
     @Test
@@ -75,7 +76,7 @@ public class AnimalTest {
         Animal rat = new Animal(new Vector2d(0,0), 10, genes);
         //removing randomness
         rat.setDirection(MapDirection.NORTH);
-        rat.setCurrentGene(0);
+        rat.setCurrentGeneIndex(0);
 
         try {
             //0
@@ -83,42 +84,42 @@ public class AnimalTest {
             assertEquals(new Vector2d(1, 1), rat.getPosition());
             assertEquals(MapDirection.NORTH_EAST, rat.getDirection());
             assertEquals(9, rat.getEnergy());
-            assertEquals(1,rat.getCurrentGene());
+            assertEquals(1,rat.getCurrentGeneIndex());
 
             //1
             rat.move();
             assertEquals(new Vector2d(2,0), rat.getPosition());
             assertEquals(MapDirection.SOUTH_EAST, rat.getDirection());
             assertEquals(8, rat.getEnergy());
-            assertEquals(2,rat.getCurrentGene());
+            assertEquals(2,rat.getCurrentGeneIndex());
 
             //2
             rat.move();
             assertEquals(new Vector2d(1,0), rat.getPosition());
             assertEquals(MapDirection.WEST, rat.getDirection());
             assertEquals(7, rat.getEnergy());
-            assertEquals(0,rat.getCurrentGene());
+            assertEquals(0,rat.getCurrentGeneIndex());
 
             //0
             rat.move();
             assertEquals(new Vector2d(0,1), rat.getPosition());
             assertEquals(MapDirection.NORTH_WEST, rat.getDirection());
             assertEquals(6, rat.getEnergy());
-            assertEquals(1,rat.getCurrentGene());
+            assertEquals(1,rat.getCurrentGeneIndex());
 
             //1
             rat.move();
             assertEquals(new Vector2d(1,2), rat.getPosition());
             assertEquals(MapDirection.NORTH_EAST, rat.getDirection());
             assertEquals(5, rat.getEnergy());
-            assertEquals(2,rat.getCurrentGene());
+            assertEquals(2,rat.getCurrentGeneIndex());
 
             //2
             rat.move();
             assertEquals(new Vector2d(1,1), rat.getPosition());
             assertEquals(MapDirection.SOUTH, rat.getDirection());
             assertEquals(4, rat.getEnergy());
-            assertEquals(0,rat.getCurrentGene());
+            assertEquals(0,rat.getCurrentGeneIndex());
 
         }catch (GeneOutOfRangeException e){
             e.printStackTrace();
