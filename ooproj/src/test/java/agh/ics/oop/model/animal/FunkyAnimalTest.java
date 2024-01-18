@@ -1,5 +1,8 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.animal;
 
+import agh.ics.oop.model.GeneOutOfRangeException;
+import agh.ics.oop.model.MapDirection;
+import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.animal.Animal;
 import agh.ics.oop.model.animal.FunkyAnimal;
 import org.junit.jupiter.api.Test;
@@ -106,24 +109,24 @@ public class FunkyAnimalTest {
         genes.add(4);
         Animal rat = new FunkyAnimal(new Vector2d(0,0), 10, genes);
         //removing randomness
-        rat.setCurrentGene(0);
+        rat.setCurrentGeneIndex(0);
 
-        assertEquals(6, rat.getGene());
+        assertEquals(6, rat.getCurrentGene());
 
-        rat.setCurrentGene(1);
-        assertEquals(2, rat.getGene());
+        rat.setCurrentGeneIndex(1);
+        assertEquals(2, rat.getCurrentGene());
 
-        rat.setCurrentGene(2);
-        assertEquals(4,rat.getGene());
+        rat.setCurrentGeneIndex(2);
+        assertEquals(4,rat.getCurrentGene());
 
-        rat.setCurrentGene(-3);
-        assertEquals(4,rat.getGene());
+        rat.setCurrentGeneIndex(-3);
+        assertEquals(4,rat.getCurrentGene());
 
-        rat.setCurrentGene(-2);
-        assertEquals(2,rat.getGene());
+        rat.setCurrentGeneIndex(-2);
+        assertEquals(2,rat.getCurrentGene());
 
-        rat.setCurrentGene(-1);
-        assertEquals(6,rat.getGene());
+        rat.setCurrentGeneIndex(-1);
+        assertEquals(6,rat.getCurrentGene());
     }
 
     @Test
@@ -133,24 +136,24 @@ public class FunkyAnimalTest {
         genes.add(2);
         genes.add(4);
         Animal rat = new FunkyAnimal(new Vector2d(0,0), 10, genes);
-        rat.setCurrentGene(0);
+        rat.setCurrentGeneIndex(0);
 
         rat.nextGene();
-        assertEquals(1,rat.getCurrentGene());
+        assertEquals(1,rat.getCurrentGeneIndex());
 
         rat.nextGene();
-        assertEquals(2,rat.getCurrentGene());
+        assertEquals(2,rat.getCurrentGeneIndex());
 
         rat.nextGene();
-        assertEquals(-3,rat.getCurrentGene());
+        assertEquals(-3,rat.getCurrentGeneIndex());
 
         rat.nextGene();
-        assertEquals(-2,rat.getCurrentGene());
+        assertEquals(-2,rat.getCurrentGeneIndex());
 
         rat.nextGene();
-        assertEquals(-1,rat.getCurrentGene());
+        assertEquals(-1,rat.getCurrentGeneIndex());
 
         rat.nextGene();
-        assertEquals(-0,rat.getCurrentGene());
+        assertEquals(-0,rat.getCurrentGeneIndex());
     }
 }
