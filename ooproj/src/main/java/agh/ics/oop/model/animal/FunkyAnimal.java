@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Random;
 
 public class FunkyAnimal extends Animal{
-    public FunkyAnimal(Vector2d position, int energy, List<Integer> genes) {
-        super(position, energy, genes);
+    public FunkyAnimal(Vector2d position, int energy, List<Integer> genes,int minMutationAmount, int maxMutationAmount) {
+        super(position, energy, genes, minMutationAmount, maxMutationAmount);
         //negative index means that animal is executing genes in reverse order
         //for example: -7 means that is on sixth (because of index 0) gene and going left
         //yep math.random is ass because of 0 my beloved number
@@ -41,7 +41,8 @@ public class FunkyAnimal extends Animal{
     @Override
     public Animal reproduce(Animal mate, int reproductionEnergyCost) {
         List<Integer> genes = determineBabyGenes(mate);
-        Animal babyAnimal = new FunkyAnimal(this.position, reproductionEnergyCost * 2, genes);
+        Animal babyAnimal = new FunkyAnimal(this.position, reproductionEnergyCost * 2, genes,
+                                                        this.minMutationAmount, this.maxMutationAmount);
 
         this.energy -= reproductionEnergyCost;
         mate.energy -= reproductionEnergyCost;

@@ -11,9 +11,10 @@ import java.util.*;
 
 public class EarthMap extends AbstractWorldMap {
     public EarthMap(
-            Boundary mapBoundary
+            Boundary mapBoundary,
+            int reproductionEnergyMinimum
     ) {
-        super(mapBoundary);
+        super(mapBoundary, reproductionEnergyMinimum);
     }
 
     @Override

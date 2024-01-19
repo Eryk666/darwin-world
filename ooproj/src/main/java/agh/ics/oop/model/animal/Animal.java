@@ -15,8 +15,13 @@ public class Animal {
     protected int currentGeneIndex;
     protected int age;
     protected ArrayList<Animal> children;
+    protected int minMutationAmount;
+    protected int maxMutationAmount;
 
-    public Animal(Vector2d position, int energy, List<Integer> genes) {
+
+    public Animal(Vector2d position, int energy, List<Integer> genes, int minMutationAmount, int maxMutationAmount) {
+        this.maxMutationAmount = maxMutationAmount;
+        this.minMutationAmount = minMutationAmount;
         this.position = position;
         this.direction = MapDirection.NORTH;
         this.energy = energy;
@@ -137,7 +142,8 @@ public class Animal {
 
     public Animal reproduce(Animal mate, int reproductionEnergyCost) {
         List<Integer> genes = determineBabyGenes(mate);
-        Animal babyAnimal = new Animal(this.position, reproductionEnergyCost * 2, genes);
+        Animal babyAnimal = new Animal(this.position, reproductionEnergyCost * 2,
+                genes,this.minMutationAmount,this.maxMutationAmount);
 
         this.energy -= reproductionEnergyCost;
         mate.energy -= reproductionEnergyCost;
@@ -175,7 +181,9 @@ public class Animal {
         }
 
         //mutations
-        int mutationAmount = random.nextInt(this.genes.size() + 1);
+        int mutationAmount = random.nextInt(this.maxMutationAmount- this.minMutationAmount)
+                             + this.minMutationAmount;
+
         ArrayList<Integer> indices = new ArrayList<>();
 
         for (int i = 0; i < this.genes.size(); i++) {

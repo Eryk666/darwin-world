@@ -20,7 +20,7 @@ public class AnimalTest {
             ArrayList<Integer> genes = new ArrayList<>();
             //1 gene so between -1 and 0
             genes.add(7);
-            Animal pet = new Animal(new Vector2d(0,0),100,genes);
+            Animal pet = new Animal(new Vector2d(0,0),100,genes,0,0);
             assertEquals(0, pet.getCurrentGeneIndex());
         }
         for (int i = 0; i < 10000; i++) {
@@ -28,7 +28,7 @@ public class AnimalTest {
             //2 genes so between -2 and 1
             genes.add(7);
             genes.add(7);
-            Animal pet = new Animal(new Vector2d(0,0),100,genes);
+            Animal pet = new Animal(new Vector2d(0,0),100,genes,0,0);
             assertTrue(pet.getCurrentGeneIndex() >= 0 && pet.getCurrentGeneIndex() <= 1);
         }
         for (int i = 0; i < 10000; i++) {
@@ -37,7 +37,7 @@ public class AnimalTest {
             for (int j = 0; j < 1000; j++) {
                 genes.add(7);
             }
-            Animal pet = new Animal(new Vector2d(0,0),100,genes);
+            Animal pet = new Animal(new Vector2d(0,0),100,genes,0,0);
             assertTrue(pet.getCurrentGeneIndex() >= 0 && pet.getCurrentGeneIndex() <= 999);
         }
     }
@@ -46,7 +46,7 @@ public class AnimalTest {
         //initializing animal
         ArrayList<Integer> genes = new ArrayList<>();
         genes.add(7);
-        Animal pet = new Animal(new Vector2d(0,0),100,genes);
+        Animal pet = new Animal(new Vector2d(0,0),100,genes,0,0);
         //removing randomness;
         pet.setDirection(MapDirection.NORTH);
 
@@ -65,7 +65,7 @@ public class AnimalTest {
         //initializing animal
         ArrayList<Integer> genes = new ArrayList<>();
         genes.add(-1);
-        Animal rat = new Animal(new Vector2d(0,0),10,genes);
+        Animal rat = new Animal(new Vector2d(0,0),10,genes,0,0);
         assertThrows(GeneOutOfRangeException.class, rat::move);
     }
 
@@ -76,7 +76,7 @@ public class AnimalTest {
         genes.add(1);
         genes.add(2);
         genes.add(3);
-        Animal rat = new Animal(new Vector2d(0,0), 10, genes);
+        Animal rat = new Animal(new Vector2d(0,0), 10, genes,0,0);
         //removing randomness
         rat.setDirection(MapDirection.NORTH);
         rat.setCurrentGeneIndex(0);
@@ -135,7 +135,7 @@ public class AnimalTest {
         genes.add(6);
         genes.add(2);
         genes.add(4);
-        Animal rat = new Animal(new Vector2d(0,0), 10, genes);
+        Animal rat = new Animal(new Vector2d(0,0), 10, genes,0,0);
         //removing randomness
         rat.setCurrentGeneIndex(0);
 
@@ -154,7 +154,7 @@ public class AnimalTest {
         genes.add(6);
         genes.add(2);
         genes.add(4);
-        Animal rat = new Animal(new Vector2d(0,0), 10, genes);
+        Animal rat = new Animal(new Vector2d(0,0), 10, genes,0,0);
         rat.setCurrentGeneIndex(0);
 
         rat.nextGene();

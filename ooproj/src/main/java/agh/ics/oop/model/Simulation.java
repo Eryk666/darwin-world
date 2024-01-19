@@ -5,7 +5,7 @@ import agh.ics.oop.model.worldmap.AbstractWorldMap;
 
 import java.util.List;
 
-public class Simulation {
+public class Simulation implements Runnable {
     private final AbstractWorldMap worldMap;
     private final List<Animal> initialAnimals;
     private final int reproductionEnergyMinimum;
@@ -48,7 +48,8 @@ public class Simulation {
         worldMap.removeDeadAnimals();
         worldMap.movementPhase();
         worldMap.feedingPhase(energyPerGrass);
-        worldMap.reproductionPhase(reproductionEnergyCost, reproductionEnergyMinimum);
+        worldMap.reproductionPhase(reproductionEnergyCost);
         worldMap.growGrass(grassGrownPerDay);
+        worldMap.updateMap();
     }
 }

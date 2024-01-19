@@ -3,8 +3,6 @@ package agh.ics.oop.model.animal;
 import agh.ics.oop.model.GeneOutOfRangeException;
 import agh.ics.oop.model.MapDirection;
 import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.animal.Animal;
-import agh.ics.oop.model.animal.FunkyAnimal;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -20,7 +18,7 @@ public class FunkyAnimalTest {
             ArrayList<Integer> genes = new ArrayList<>();
             //1 gene so between -1 and 0
             genes.add(7);
-            Animal pet = new FunkyAnimal(new Vector2d(0,0),100,genes);
+            Animal pet = new FunkyAnimal(new Vector2d(0,0),100,genes,0,0);
             assertTrue(pet.getCurrentGeneIndex() >= -1 && pet.getCurrentGeneIndex() <= 0);
         }
         for (int i = 0; i < 10000; i++) {
@@ -28,7 +26,7 @@ public class FunkyAnimalTest {
             //2 genes so between -2 and 1
             genes.add(7);
             genes.add(7);
-            Animal pet = new FunkyAnimal(new Vector2d(0,0),100,genes);
+            Animal pet = new FunkyAnimal(new Vector2d(0,0),100,genes,0,0);
             assertTrue(pet.getCurrentGeneIndex() >= -2 && pet.getCurrentGeneIndex() <= 1);
         }
         for (int i = 0; i < 10000; i++) {
@@ -37,7 +35,7 @@ public class FunkyAnimalTest {
             for (int j = 0; j < 1000; j++) {
                 genes.add(7);
             }
-            Animal pet = new FunkyAnimal(new Vector2d(0,0),100,genes);
+            Animal pet = new FunkyAnimal(new Vector2d(0,0),100,genes,0,0);
             assertTrue(pet.getCurrentGeneIndex() >= -1000 && pet.getCurrentGeneIndex() <= 999);
         }
     }
@@ -48,7 +46,7 @@ public class FunkyAnimalTest {
         genes.add(1);
         genes.add(2);
         genes.add(3);
-        Animal rat = new FunkyAnimal(new Vector2d(0,0), 10, genes);
+        Animal rat = new FunkyAnimal(new Vector2d(0,0), 10, genes,0,0);
         //removing randomness
         rat.setDirection(MapDirection.NORTH);
         rat.setCurrentGeneIndex(0);
@@ -107,7 +105,7 @@ public class FunkyAnimalTest {
         genes.add(6);
         genes.add(2);
         genes.add(4);
-        Animal rat = new FunkyAnimal(new Vector2d(0,0), 10, genes);
+        Animal rat = new FunkyAnimal(new Vector2d(0,0), 10, genes,0,0);
         //removing randomness
         rat.setCurrentGeneIndex(0);
 
@@ -135,7 +133,7 @@ public class FunkyAnimalTest {
         genes.add(6);
         genes.add(2);
         genes.add(4);
-        Animal rat = new FunkyAnimal(new Vector2d(0,0), 10, genes);
+        Animal rat = new FunkyAnimal(new Vector2d(0,0), 10, genes,0,0);
         rat.setCurrentGeneIndex(0);
 
         rat.nextGene();

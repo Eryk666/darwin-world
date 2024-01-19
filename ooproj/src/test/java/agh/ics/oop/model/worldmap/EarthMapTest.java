@@ -15,7 +15,7 @@ public class EarthMapTest {
     @Test
     void getMapBoundary() {
         EarthMap map = new EarthMap(
-                new Boundary(new Vector2d(6,9),new Vector2d(21,37)));
+                new Boundary(new Vector2d(6,9),new Vector2d(21,37)),0);
         assertEquals(new Boundary(new Vector2d(6,9),new Vector2d(21,37)),map.getMapBoundary());
     }
 

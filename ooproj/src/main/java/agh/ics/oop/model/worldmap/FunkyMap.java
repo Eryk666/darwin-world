@@ -10,9 +10,10 @@ import java.util.*;
 
 public class FunkyMap extends EarthMap{
     public FunkyMap(
-            Boundary mapBoundary
-    ) {
-        super(mapBoundary);
+            Boundary mapBoundary,
+            int reproductionEnergyMinimum
+            ) {
+        super(mapBoundary, reproductionEnergyMinimum);
     }
 
     //everything the same apart from the grass growing

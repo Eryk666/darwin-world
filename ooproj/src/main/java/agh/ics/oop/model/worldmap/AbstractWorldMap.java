@@ -1,9 +1,6 @@
 package agh.ics.oop.model.worldmap;
 
-import agh.ics.oop.model.Boundary;
-import agh.ics.oop.model.GeneOutOfRangeException;
-import agh.ics.oop.model.Grass;
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.*;
 import agh.ics.oop.model.animal.Animal;
 
 import java.util.*;
@@ -13,10 +10,20 @@ public abstract class AbstractWorldMap {
     protected final List<Animal> animals;
     protected final Map<Vector2d, Grass> grasses;
 
-    public AbstractWorldMap(Boundary mapBoundary) {
+    protected final ArrayList<MapChangeListener> observers;
+
+    protected final int reproductionEnergyMinimum;
+
+    public AbstractWorldMap(Boundary mapBoundary, int reproductionEnergyMinimum) {
         this.mapBoundary = mapBoundary;
         this.animals = new ArrayList<>();
         this.grasses = new HashMap<>();
+        this.observers = new ArrayList<>();
+        this.reproductionEnergyMinimum = reproductionEnergyMinimum;
+    }
+
+    public int getReproductionEnergyMinimum(){
+        return  this.reproductionEnergyMinimum;
     }
 
     public Boundary getMapBoundary() {
@@ -66,6 +73,21 @@ public abstract class AbstractWorldMap {
     }
 
     public void feedingPhase(int energyPerGrass){
+
+        Map<Vector2d, Animal> strongestAnimals = getStrongestAnimals();
+
+        // Attempting to eat grass for strongest animals
+        strongestAnimals.forEach((position, animal) -> {
+            // Checking if there is any grass on that position
+            if (this.grasses.get(position) != null) {
+                animal.eatGrass(energyPerGrass);
+                // Removing the grass
+                this.grasses.remove(position);
+            }
+        });
+    }
+
+    public Map<Vector2d,Animal> getStrongestAnimals(){
         // Finding the strongest animal for each position
         Map<Vector2d, Animal> strongestAnimals = new HashMap<>();
 
@@ -79,19 +101,10 @@ public abstract class AbstractWorldMap {
                 strongestAnimals.put(position, animal);
             }
         });
-
-        // Attempting to eat grass for strongest animals
-        strongestAnimals.forEach((position, animal) -> {
-            // Checking if there is any grass on that position
-            if (this.grasses.get(position) != null) {
-                animal.eatGrass(energyPerGrass);
-                // Removing the grass
-                this.grasses.remove(position);
-            }
-        });
+        return strongestAnimals;
     }
 
-    public void reproductionPhase(int reproductionEnergyCost, int reproductionEnergyMinimum) {
+    public void reproductionPhase(int reproductionEnergyCost) {
         Map<Vector2d, ArrayList<Animal>> sortedAnimals = new HashMap<>();
 
         this.animals.forEach(animal -> {
@@ -126,4 +139,20 @@ public abstract class AbstractWorldMap {
             }
         });
     }
+
+    public void registerObserver(MapChangeListener observer){
+        this.observers.add(observer);
+    }
+
+    public void unregisterObserver(MapChangeListener observer){
+        this.observers.remove(observer);
+    }
+
+    public synchronized void updateMap(){
+        for (MapChangeListener observer : this.observers){
+            observer.mapChanged(this,"");
+        }
+    }
+
+
 }
