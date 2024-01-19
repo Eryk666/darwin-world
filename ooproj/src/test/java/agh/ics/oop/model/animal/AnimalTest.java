@@ -3,7 +3,6 @@ package agh.ics.oop.model.animal;
 import agh.ics.oop.model.GeneOutOfRangeException;
 import agh.ics.oop.model.MapDirection;
 import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.animal.Animal;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

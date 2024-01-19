@@ -4,7 +4,6 @@ import agh.ics.oop.model.Boundary;
 import agh.ics.oop.model.Vector2d;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -18,7 +18,6 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.shape.Rectangle;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 

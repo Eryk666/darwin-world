@@ -7,7 +7,6 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.util.Objects;
 
 public class SimulationApp extends Application {
     @Override
