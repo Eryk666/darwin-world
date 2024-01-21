@@ -3,22 +3,25 @@ package agh.ics.oop.front.presenter;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.animal.*;
 import agh.ics.oop.model.worldmap.*;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class SimulationPresenter implements MapChangeListener, Initializable {
@@ -41,6 +44,8 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
             } catch (InterruptedException ex){
                 ex.printStackTrace();
             }
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), event -> {}));
+            timeline.play();
         });
     }
 
@@ -51,55 +56,51 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
         int rows = currBoundary.upperRight().y() - currBoundary.bottomLeft().y()+1;
         int cols = currBoundary.upperRight().x() - currBoundary.bottomLeft().x()+1;
 
+        System.out.println(currBoundary);
+        System.out.println(currBoundary.upperRight());
 
 
         Map<Vector2d, Animal> strongestAnimals = this.worldMap.getStrongestAnimals();
         Map<Vector2d, Grass> grassMap = this.worldMap.getGrasses();
+        grassMap.forEach((position,grass) -> System.out.println(position));
 
             for (int i = 0; i <= cols; i++){
                 for (int j = 0; j <= rows; j++){
                     Vector2d currPos = new Vector2d(currBoundary.bottomLeft().x()+i,currBoundary.bottomLeft().y()+j);
-
+                    Canvas canvas;
+                    canvas = createCanvas("/empty.png",0,0);
+                    mapGrid.add(canvas, i+1, rows-j);
                     //animal is the most important so it goes first
                     if (strongestAnimals.get(currPos) != null) {
                         Animal rat = strongestAnimals.get(currPos);
-                        int rotation = switch (rat.getDirection()) {
-                            case NORTH -> 0;
-                            case NORTH_EAST -> 1;
-                            case EAST -> 2;
-                            case SOUTH_EAST -> 3;
-                            case SOUTH -> 4;
-                            case SOUTH_WEST -> 5;
-                            case WEST -> 6;
-                            case NORTH_WEST -> 7;
+                        char rotation = switch (rat.getDirection()) {
+                            case NORTH -> '0';
+                            case NORTH_EAST -> '1';
+                            case EAST -> '2';
+                            case SOUTH_EAST -> '3';
+                            case SOUTH -> '4';
+                            case SOUTH_WEST -> '5';
+                            case WEST -> '6';
+                            case NORTH_WEST -> '7';
                         };
                         int yOffset = 0;
                         if (rat.getEnergy() > this.worldMap.getReproductionEnergyMinimum()) {
                             yOffset = 50;
                         }
                         int xOffset = rotation * 50; //sprite is 50x50 each
-                        Image image = new Image("ratsprite1.png");
-                        final ImageView view = new ImageView(image);
-                        Rectangle mask = new Rectangle(xOffset, yOffset, 50, 50);
-                        view.setClip(mask);
-                        GridPane.setHalignment(view, HPos.CENTER);
-                        GridPane.setValignment(view, VPos.CENTER);
-                        mapGrid.add(view, i+1, rows-j);
+                        canvas = createCanvas("/rats/rat"+rotation+".png",xOffset,yOffset);
+                        //GridPane.setHalignment(canvas, HPos.CENTER);
+                        //GridPane.setValignment(canvas, VPos.CENTER);
+                        mapGrid.add(canvas, i+1, rows-j);
                     } else if (grassMap.get(currPos) != null) {
-                        Image image = new Image("weed.png");
-                        final ImageView view = new ImageView(image);
-                        GridPane.setHalignment(view, HPos.CENTER);
-                        GridPane.setValignment(view, VPos.CENTER);
-                        mapGrid.add(view, i+1, rows-j);
-
-                    } else {
-                        Image image = new Image("empty.png");
-                        final ImageView view = new ImageView(image);
-                        GridPane.setHalignment(view, HPos.CENTER);
-                        GridPane.setValignment(view, VPos.CENTER);
-                        mapGrid.add(view, i+1, rows-j);
+                        canvas = createCanvas("/weed.png",0,0);
+                        //GridPane.setHalignment(view, HPos.CENTER);
+                        //GridPane.setValignment(view, VPos.CENTER);
+                        mapGrid.add(canvas, i+1, rows-j);
 
                     }
+                    canvas = null;
+                    System.gc();
                 }
             }
 
@@ -114,20 +115,31 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
             //adding labels
             for (int i = 0; i <= rows; i++){
                 Label label = new Label(Integer.toString(currBoundary.bottomLeft().x()+i));
-                mapGrid.add(label,0,rows-i);
+                GridPane.setHalignment(label, HPos.CENTER);
+                GridPane.setValignment(label, VPos.CENTER);
             }
             for (int i = 1; i <= cols; i++){
                 Label label = new Label(Integer.toString(currBoundary.bottomLeft().y()+i-1));
                 mapGrid.add(label,i,0);
-                mapGrid.setAlignment(Pos.CENTER);
+                GridPane.setHalignment(label, HPos.CENTER);
+                GridPane.setValignment(label, VPos.CENTER);
             }
 
-        Thread.sleep(1000);
+
     }
     private void clearGrid() {
         this.mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0)); // hack to retain visible grid lines
         this.mapGrid.getColumnConstraints().clear();
         this.mapGrid.getRowConstraints().clear();
+    }
+
+    private Canvas createCanvas(String path, int xOffset, int yOffset){
+        Canvas canvas = new Canvas(50,50);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
+        gc.drawImage(image,0,0,50,50);
+        return canvas;
     }
 
     @Override

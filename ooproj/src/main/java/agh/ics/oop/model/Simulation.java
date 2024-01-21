@@ -37,7 +37,7 @@ public class Simulation implements Runnable {
             worldMap.placeAnimal(animal);
         }
         worldMap.growGrass(initialGrassNumber);
-
+         //temporary 1 day
         // Simulation ends when all animals are dead
         while (!worldMap.getAnimals().isEmpty()) {
             simulateDay();
