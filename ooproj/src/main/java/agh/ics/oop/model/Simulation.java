@@ -1,11 +1,15 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.csv.CSVEventListener;
 import agh.ics.oop.model.animal.Animal;
 import agh.ics.oop.model.worldmap.AbstractWorldMap;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Simulation implements Runnable {
+    private final UUID simulationID = UUID.randomUUID();
     private final AbstractWorldMap worldMap;
     private final List<Animal> initialAnimals;
     private final int reproductionEnergyMinimum;
@@ -13,6 +17,8 @@ public class Simulation implements Runnable {
     private final int initialGrassNumber;
     private final int energyPerGrass;
     private final int grassGrownPerDay;
+    private final List<CSVEventListener> listeners = new ArrayList<>();
+    private int daysPassed = 0;
 
     public Simulation(
         AbstractWorldMap worldMap,
@@ -37,10 +43,13 @@ public class Simulation implements Runnable {
             worldMap.placeAnimal(animal);
         }
         worldMap.growGrass(initialGrassNumber);
-         //temporary 1 day
+        notifyListeners();
+
         // Simulation ends when all animals are dead
         while (!worldMap.getAnimals().isEmpty()) {
             simulateDay();
+            daysPassed += 1;
+            notifyListeners();
         }
     }
 
@@ -51,5 +60,31 @@ public class Simulation implements Runnable {
         worldMap.reproductionPhase(reproductionEnergyCost);
         worldMap.growGrass(grassGrownPerDay);
         worldMap.updateMap();
+    }
+
+    public UUID getSimulationID() {
+        return simulationID;
+    }
+
+    public AbstractWorldMap getWorldMap() {
+        return worldMap;
+    }
+
+    public int getDaysPassed() {
+        return daysPassed;
+    }
+
+    public void subscribe(CSVEventListener listener) {
+        listeners.add(listener);
+    }
+
+    public void unsubscribe(CSVEventListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void notifyListeners() {
+        for (CSVEventListener listener : listeners) {
+            listener.update(this);
+        }
     }
 }
