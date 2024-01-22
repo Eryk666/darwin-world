@@ -8,7 +8,7 @@ import agh.ics.oop.model.Vector2d;
 import java.util.*;
 
 public class Animal {
-    private UUID animalID = UUID.randomUUID();
+    private final UUID animalID = UUID.randomUUID();
     protected Vector2d position;
     protected MapDirection direction;
     protected int energy;
