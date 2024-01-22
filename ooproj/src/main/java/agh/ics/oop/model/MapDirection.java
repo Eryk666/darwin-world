@@ -14,14 +14,14 @@ public enum MapDirection {
     @Override
     public String toString() {
         return switch (this){
-            case NORTH -> "Północ";
-            case NORTH_EAST -> "Północny Wschód";
-            case EAST -> "Wschód";
-            case SOUTH_EAST -> "Południowy Wschód";
-            case SOUTH -> "Południe";
-            case SOUTH_WEST -> "Południowy Zachód";
-            case WEST -> "Zachód";
-            case NORTH_WEST -> "Północny Zachód";
+            case NORTH -> "N";
+            case NORTH_EAST -> "NE";
+            case EAST -> "E";
+            case SOUTH_EAST -> "SE";
+            case SOUTH -> "S";
+            case SOUTH_WEST -> "SW";
+            case WEST -> "W";
+            case NORTH_WEST -> "NW";
         };
     }
     //used to rotate animal clockwise

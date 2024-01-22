@@ -8,6 +8,7 @@ import agh.ics.oop.model.Vector2d;
 import java.util.*;
 
 public class Animal {
+    private final UUID animalID = UUID.randomUUID();
     protected Vector2d position;
     protected MapDirection direction;
     protected int energy;
@@ -33,6 +34,10 @@ public class Animal {
     }
 
     //getters&setters
+    public UUID getAnimalID() {
+        return animalID;
+    }
+
     public Vector2d getPosition() {
         return position;
     }
@@ -159,7 +164,7 @@ public class Animal {
         List<Integer> genes = new ArrayList<>();
 
         //ratio
-        int ratio = (this.energy / mate.energy) * this.genes.size();
+        int ratio = (this.energy / (this.energy + mate.energy)) * this.genes.size();
 
         //test if left and right give the same amounts of genes !!!!!!!!!!!!!!!!!!!!!!!
         if (random.nextBoolean()) {

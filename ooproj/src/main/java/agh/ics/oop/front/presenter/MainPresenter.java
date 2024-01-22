@@ -8,6 +8,8 @@ import agh.ics.oop.model.Simulation;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.animal.Animal;
 import agh.ics.oop.model.animal.FunkyAnimal;
+import agh.ics.oop.model.csv.CSVEventListener;
+import agh.ics.oop.model.csv.SimulationChangeListener;
 import agh.ics.oop.model.worldmap.AbstractWorldMap;
 import agh.ics.oop.model.worldmap.EarthMap;
 import agh.ics.oop.model.worldmap.FunkyMap;
@@ -165,6 +167,14 @@ public class MainPresenter implements Initializable {
         //works up to here
         Simulation simulation = new Simulation(map,animals,reproductionEnergyMinimum,reproductionEnergyCost,initialGrassNumber,
                 grassGrownPerDay,energyPerGrass);
+
+        // TODO let users choose if simulation should be saved to csv file
+        boolean saveToFile = true;
+        if (saveToFile) {
+            CSVEventListener simulationChangeListener = new SimulationChangeListener();
+            simulation.subscribe(simulationChangeListener);
+        }
+
 
         presenter.setWorldMap(map);
         stage.setMaximized(true);

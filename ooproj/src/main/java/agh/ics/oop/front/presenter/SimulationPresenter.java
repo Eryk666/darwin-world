@@ -28,6 +28,7 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
     private static final int CELL_WIDTH = 50;
     private static final int CELL_HEIGHT = 50;
 
+
     private AbstractWorldMap worldMap;
     @FXML
     public GridPane mapGrid;
