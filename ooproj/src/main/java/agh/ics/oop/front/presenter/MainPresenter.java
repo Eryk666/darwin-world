@@ -167,6 +167,7 @@ public class MainPresenter implements Initializable {
                 grassGrownPerDay,energyPerGrass);
 
         presenter.setWorldMap(map);
+        stage.setMaximized(true);
         stage.show();
 
         Thread thread = new Thread(simulation);

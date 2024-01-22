@@ -64,8 +64,8 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
         Map<Vector2d, Grass> grassMap = this.worldMap.getGrasses();
         grassMap.forEach((position,grass) -> System.out.println(position));
 
-            for (int i = 0; i <= cols; i++){
-                for (int j = 0; j <= rows; j++){
+            for (int i = 0; i < cols; i++){
+                for (int j = 0; j < rows; j++){
                     Vector2d currPos = new Vector2d(currBoundary.bottomLeft().x()+i,currBoundary.bottomLeft().y()+j);
                     Canvas canvas;
                     canvas = createCanvas("/empty.png",0,0);
@@ -73,6 +73,9 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
                     //animal is the most important so it goes first
                     if (strongestAnimals.get(currPos) != null) {
                         Animal rat = strongestAnimals.get(currPos);
+                        char health = switch (rat.getEnergy()){
+                            case 
+                        }
                         char rotation = switch (rat.getDirection()) {
                             case NORTH -> '0';
                             case NORTH_EAST -> '1';
@@ -89,13 +92,9 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
                         }
                         int xOffset = rotation * 50; //sprite is 50x50 each
                         canvas = createCanvas("/rats/rat"+rotation+".png",xOffset,yOffset);
-                        //GridPane.setHalignment(canvas, HPos.CENTER);
-                        //GridPane.setValignment(canvas, VPos.CENTER);
                         mapGrid.add(canvas, i+1, rows-j);
                     } else if (grassMap.get(currPos) != null) {
                         canvas = createCanvas("/weed.png",0,0);
-                        //GridPane.setHalignment(view, HPos.CENTER);
-                        //GridPane.setValignment(view, VPos.CENTER);
                         mapGrid.add(canvas, i+1, rows-j);
 
                     }
@@ -113,14 +112,15 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
                 mapGrid.getColumnConstraints().add(new ColumnConstraints(CELL_WIDTH));
             }
             //adding labels
-            for (int i = 0; i <= rows; i++){
+            for (int i = 0; i < rows; i++){
                 Label label = new Label(Integer.toString(currBoundary.bottomLeft().x()+i));
+                mapGrid.add(label,0,rows-i);
                 GridPane.setHalignment(label, HPos.CENTER);
                 GridPane.setValignment(label, VPos.CENTER);
             }
-            for (int i = 1; i <= cols; i++){
-                Label label = new Label(Integer.toString(currBoundary.bottomLeft().y()+i-1));
-                mapGrid.add(label,i,0);
+            for (int i = 0; i < cols; i++){
+                Label label = new Label(Integer.toString(currBoundary.bottomLeft().y()+i));
+                mapGrid.add(label,i+1,0);
                 GridPane.setHalignment(label, HPos.CENTER);
                 GridPane.setValignment(label, VPos.CENTER);
             }
@@ -139,6 +139,9 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
 
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
         gc.drawImage(image,0,0,50,50);
+        image = null;
+        gc = null;
+        System.gc();
         return canvas;
     }
 
