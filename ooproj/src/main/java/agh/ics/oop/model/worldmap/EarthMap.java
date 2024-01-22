@@ -20,10 +20,10 @@ public class EarthMap extends AbstractWorldMap {
     @Override
     public void growGrass(int grassAmount){
         //1. Generate equator area
-        int divider = mapBoundary.upperRight().y()-mapBoundary.bottomLeft().y()/5;
+        int divider = (mapBoundary.upperRight().y()-mapBoundary.bottomLeft().y())/5;
 
         Boundary equator = new Boundary(new Vector2d(this.mapBoundary.bottomLeft().x(),
-                this.mapBoundary.bottomLeft().y()+divider*2)
+                this.mapBoundary.bottomLeft().y()+divider*2+1)
                 ,new Vector2d(this.mapBoundary.upperRight().x(),
                 this.mapBoundary.bottomLeft().y()+divider*3));
 
@@ -32,7 +32,7 @@ public class EarthMap extends AbstractWorldMap {
         int equatorHeight = equator.upperRight().y()-equator.bottomLeft().y()+1;
         ArrayList<Vector2d> nonGrassEquatorPositions = new ArrayList<>();
         for (int i = 0; i < width; i++){
-            for (int j =0; j < equatorHeight; j++){
+            for (int j = 0; j < equatorHeight; j++){
                 Vector2d currPosition = new Vector2d(this.mapBoundary.bottomLeft().x()+i,
                         equator.bottomLeft().y()+j);
                 if(this.grasses.get(currPosition) == null ){
@@ -52,8 +52,8 @@ public class EarthMap extends AbstractWorldMap {
         }
 
         //5. Create new Array of non grass spaces outside equator
-        int lowerHeight = equator.bottomLeft().y()-this.mapBoundary.bottomLeft().y()+1;
-        int upperHeight = this.mapBoundary.upperRight().y()-equator.bottomLeft().y()+1;
+        int lowerHeight = equator.bottomLeft().y()-this.mapBoundary.bottomLeft().y();
+        int upperHeight = this.mapBoundary.upperRight().y()-equator.upperRight().y();
         ArrayList<Vector2d> nonGrassNonEquatorPositions = new ArrayList<>();
         for (int i = 0; i < width; i++){
             for (int j = 0; j < lowerHeight; j++) {
@@ -65,7 +65,7 @@ public class EarthMap extends AbstractWorldMap {
             }
             for (int j = 0; j < upperHeight; j++) {
                 Vector2d currPosition = new Vector2d(this.mapBoundary.bottomLeft().x() + i,
-                        equator.upperRight().y() + j);
+                        equator.upperRight().y() + j+1);
                 if (this.grasses.get(currPosition) == null) {
                     nonGrassNonEquatorPositions.add(currPosition);
                 }

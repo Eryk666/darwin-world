@@ -43,23 +43,35 @@ public class Simulation implements Runnable {
             worldMap.placeAnimal(animal);
         }
         worldMap.growGrass(initialGrassNumber);
+        System.out.println(worldMap.getGrasses().size());
         notifyListeners();
 
         // Simulation ends when all animals are dead
         while (!worldMap.getAnimals().isEmpty()) {
+            if (worldMap.getPaused()){
+                continue;
+            }
             simulateDay();
             daysPassed += 1;
             notifyListeners();
+            worldMap.updateMap();
+            System.out.println(worldMap.getGrasses().size());
         }
     }
 
-    private void simulateDay() {
+    private void simulateDay()  {
+        worldMap.clearMapUpdate();
         worldMap.removeDeadAnimals();
         worldMap.movementPhase();
         worldMap.feedingPhase(energyPerGrass);
         worldMap.reproductionPhase(reproductionEnergyCost);
         worldMap.growGrass(grassGrownPerDay);
-        worldMap.updateMap();
+
+        try {
+            Thread.sleep(3000);
+        }catch (InterruptedException e){
+            System.out.println(e);
+        }
     }
 
     public UUID getSimulationID() {
@@ -84,7 +96,7 @@ public class Simulation implements Runnable {
 
     public void notifyListeners() {
         for (CSVEventListener listener : listeners) {
-            listener.update(this);
+            //listener.update(this);
         }
     }
 }

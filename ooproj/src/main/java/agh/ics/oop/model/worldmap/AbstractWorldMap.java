@@ -9,21 +9,28 @@ public abstract class AbstractWorldMap {
     protected final Boundary mapBoundary;
     protected final List<Animal> animals;
     protected final Map<Vector2d, Grass> grasses;
-
     protected final ArrayList<MapChangeListener> observers;
-
     protected final int reproductionEnergyMinimum;
-
+    protected final ArrayList<Vector2d> mapUpdates;
+    protected boolean paused;
     public AbstractWorldMap(Boundary mapBoundary, int reproductionEnergyMinimum) {
         this.mapBoundary = mapBoundary;
         this.animals = new ArrayList<>();
         this.grasses = new HashMap<>();
         this.observers = new ArrayList<>();
         this.reproductionEnergyMinimum = reproductionEnergyMinimum;
+        this.mapUpdates = new ArrayList<>();
     }
 
     public int getReproductionEnergyMinimum(){
         return  this.reproductionEnergyMinimum;
+    }
+
+    public void setPaused(boolean paused){
+        this.paused = paused;
+    }
+    public boolean getPaused(){
+        return this.paused;
     }
 
     public Boundary getMapBoundary() {
@@ -83,6 +90,7 @@ public abstract class AbstractWorldMap {
                 animal.eatGrass(energyPerGrass);
                 // Removing the grass
                 this.grasses.remove(position);
+                this.mapUpdates.add(position);
             }
         });
     }
@@ -150,8 +158,12 @@ public abstract class AbstractWorldMap {
 
     public synchronized void updateMap(){
         for (MapChangeListener observer : this.observers){
-            observer.mapChanged(this,"");
+            observer.mapChanged(this,"position");
         }
+    }
+
+    public void clearMapUpdate(){
+        this.mapUpdates.clear();
     }
 
 

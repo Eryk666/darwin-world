@@ -186,8 +186,13 @@ public class Animal {
         }
 
         //mutations
-        int mutationAmount = random.nextInt(this.maxMutationAmount- this.minMutationAmount)
-                             + this.minMutationAmount;
+        int mutationAmount;
+        if(this.maxMutationAmount <= this.minMutationAmount){
+            mutationAmount = 0;
+        }else{
+            mutationAmount = random.nextInt(this.maxMutationAmount- this.minMutationAmount)
+                    + this.minMutationAmount;
+        }
 
         ArrayList<Integer> indices = new ArrayList<>();
 
