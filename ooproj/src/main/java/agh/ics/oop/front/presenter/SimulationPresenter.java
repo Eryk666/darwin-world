@@ -63,6 +63,8 @@ public class SimulationPresenter implements SimulationChangeListener, Initializa
 
     private Animal displayStatsAnimal;
 
+    private Statistics statistics;
+
 
     public void setWorldMap(AbstractWorldMap map){
         this.worldMap = map;
@@ -72,6 +74,7 @@ public class SimulationPresenter implements SimulationChangeListener, Initializa
     @Override
     public void update(Simulation simulation) {
         Platform.runLater(() -> {
+            this.statistics = new Statistics(simulation);
             try {
                 drawMap();
                 if (statsBoolean) {
@@ -94,13 +97,13 @@ public class SimulationPresenter implements SimulationChangeListener, Initializa
 
     // Animal stats
     private void updateAnimalStats() {
-        this.animalGenome.setText("Animal genome: " + displayStatsAnimal.getGenes());
-        this.animalCurrentGenome.setText("Current genome: " + displayStatsAnimal.getCurrentGene());
-        this.animalEnergy.setText("Animal energy: " + displayStatsAnimal.getEnergy());
-        this.plantsEaten.setText("Plants eaten amount: " + displayStatsAnimal.getGrassEatenAmount());
-        this.predecessors.setText("Animal predecessors: " + displayStatsAnimal.getDescendantsAmount(new ArrayList<>()));
-        this.animalLifespan.setText("Animal Lifespan: " + displayStatsAnimal.getAge());
-        this.dayOfDeath.setText("Day of death: " + displayStatsAnimal.getDayOfDeath());
+        this.animalGenome.setText(this.statistics.animalGenome(this.displayStatsAnimal));
+        this.animalCurrentGenome.setText(this.statistics.animalCurrentGenome(this.displayStatsAnimal));
+        this.animalEnergy.setText(this.statistics.animalEnergy(this.displayStatsAnimal));
+        this.plantsEaten.setText(this.statistics.animalPlantsEaten(this.displayStatsAnimal));
+        this.predecessors.setText(this.statistics.animalPredecessors(this.displayStatsAnimal));
+        this.animalLifespan.setText(this.statistics.animalLifespan(this.displayStatsAnimal));
+        this.dayOfDeath.setText(this.statistics.animalDayOfDeath(this.displayStatsAnimal));
     }
 
     private void clearAnimalStats(){
@@ -118,11 +121,11 @@ public class SimulationPresenter implements SimulationChangeListener, Initializa
         // System.out.println("STATS:");
         this.animalsAmount.setText("Animals amount: " + this.worldMap.getAnimals().size());
         this.plantsAmount.setText("Plants amount: " + this.worldMap.getGrasses().size());
-        this.emptySpaces.setText("Empty spaces: " + this.worldMap.countEmptySpaces());
-        this.mostPopularGenome.setText("Most popular genome: " + this.worldMap.commonGenes());
-        this.averageEnergy.setText("Average energy: " + round(this.worldMap.averageEnergy(),2));
-        this.deadAnimalsLifespan.setText("Average dead animal lifespan: " + round(this.worldMap.averageDeadAge(),2));
-        this.animalsPredecessors.setText("Average alive animal predecessors amount: " + round(this.worldMap.averageAlivePredecessors(),2));
+        this.emptySpaces.setText("Empty spaces: " + this.statistics.countEmptySpaces());
+        this.mostPopularGenome.setText("Most popular genome: " + this.statistics.bestGenome());
+        this.averageEnergy.setText("Average energy: " + this.statistics.averageEnergy());
+        this.deadAnimalsLifespan.setText("Average dead animal lifespan: " + this.statistics.averageDeadAge());
+        this.animalsPredecessors.setText("Average alive animal predecessors amount: " + this.statistics.averageAlivePredecessors());
     }
 
     private void clearStats(){
@@ -134,12 +137,6 @@ public class SimulationPresenter implements SimulationChangeListener, Initializa
         this.deadAnimalsLifespan.setText("");
         this.animalsPredecessors.setText("");
     }
-
-
-
-
-
-
 
     private void drawMap() throws InterruptedException {
         clearGrid();
@@ -153,7 +150,7 @@ public class SimulationPresenter implements SimulationChangeListener, Initializa
         Map<Vector2d, Animal> strongestAnimals = this.worldMap.getStrongestAnimals();
         Map<Vector2d, Grass> grassMap = this.worldMap.getGrasses();
         ArrayList<Vector2d> preferredGrassSpaces = this.worldMap.generatePreferredGrassSpaces();
-        List<Integer> bestGenome = this.worldMap.commonGenes();
+        List<Integer> bestGenome = this.statistics.determineBestGenome();
 
         System.out.println("Grass size:" + grassMap.size());
 
