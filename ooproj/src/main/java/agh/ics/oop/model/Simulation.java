@@ -52,7 +52,6 @@ public class Simulation implements Runnable {
             simulateDay();
             daysPassed += 1;
             notifyListeners();
-            worldMap.updateMap();
         }
     }
 

@@ -71,7 +71,7 @@ public class MainPresenter implements Initializable {
 
     @FXML
     private void simulationStartButton() throws IOException, InterruptedException, WrongInputException {
-        //parse inputs
+        // Parse inputs
         Boundary mapBounds = new Boundary(new Vector2d(1,1),
                 new Vector2d(InputParser.parse(this.mapWidth.getText()),InputParser.parse(this.mapHeight.getText())));
         int initialGrassNumber = InputParser.parse(this.startGrassAmount.getText());
@@ -81,7 +81,7 @@ public class MainPresenter implements Initializable {
         int reproductionEnergyCost = InputParser.parse(this.reproductionEnergyCost.getText());
 
 
-        //select map
+        // Select map
         String selectedMap = this.mapVariant.getValue();
         if("EarthMap".equals(selectedMap)){
             System.out.println("Earth Default config");
@@ -89,7 +89,7 @@ public class MainPresenter implements Initializable {
             throw new IOException("how?");
         }
 
-        //select grass (bc we don't do anything in map we select the map here)
+        // Select grass (bc we don't do anything in map we select the map here)
         String selectedGrass = this.grassVariant.getValue();
         AbstractWorldMap map;
         if("ForestedEquators".equals(selectedGrass)){
@@ -102,7 +102,7 @@ public class MainPresenter implements Initializable {
             throw new IOException("how?");
         }
 
-        //animals
+        // Animals
         int animalAmount = InputParser.parse(this.initialAnimalAmount.getText());
         int minMutation = InputParser.parse(this.minMutationAmount.getText());
         int maxMutation = InputParser.parse(this.maxMutationAmount.getText());
@@ -112,7 +112,7 @@ public class MainPresenter implements Initializable {
         }
         int initialAnimalEnergy = InputParser.parse(this.initialAnimalEnergy.getText());
 
-        //select mutations
+        // Select mutations
         String selectedMutations = this.mutationVariant.getValue();
         if("FullRandomness".equals(selectedMutations)){
             System.out.println("Mutations Default config");
@@ -120,10 +120,10 @@ public class MainPresenter implements Initializable {
             throw new IOException("how?");
         }
 
-        //select behaviour
+        // Select behaviour
         String selectedBehaviour = this.animalBehaviourVariant.getValue();
-        //Normal animal is creating other normal animals, so we have to just put into
-        //simulation correct animal type
+        // Normal animal is creating other normal animals, so we have to just put into
+        // simulation correct animal type
         ArrayList<Animal> animals = new ArrayList<>();
         Random r = new Random();
 
@@ -142,7 +142,7 @@ public class MainPresenter implements Initializable {
             System.out.println("Funky Animal");
         } else throw new IOException("how?");
 
-        //create new scene with simulation
+        // Create new scene with simulation
 
         System.out.println("entered thread");
         FXMLLoader loader = new FXMLLoader();
@@ -163,11 +163,11 @@ public class MainPresenter implements Initializable {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         SimulationPresenter presenter = loader.getController();
-        map.registerObserver(presenter);
-        //works up to here
+        // Works up to here
         Simulation simulation = new Simulation(map,animals,reproductionEnergyMinimum,reproductionEnergyCost,initialGrassNumber,
                 grassGrownPerDay,energyPerGrass);
 
+        simulation.subscribe(presenter);
         // TODO let users choose if simulation should be saved to csv file
         boolean saveToFile = true;
         if (saveToFile) {
@@ -195,22 +195,22 @@ public class MainPresenter implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //map variant
+        // Map variant
         String[] maps = {"EarthMap"};
         this.mapVariant.getItems().addAll(maps);
         this.mapVariant.setValue("EarthMap");
 
-        //grass variant
+        // Grass variant
         String[] grass = {"ForestedEquators", "CreepingJungle"};
         this.grassVariant.getItems().addAll(grass);
         this.grassVariant.setValue("ForestedEquators");
 
-        //mutation variant
+        // Mutation variant
         String[] mutations = {"FullRandomness"};
         this.mutationVariant.getItems().addAll(mutations);
         this.mutationVariant.setValue("FullRandomness");
 
-        //behaviour variant
+        // Behaviour variant
         String[] behaviours = {"CompletePredestination","BackAndForth"};
         this.animalBehaviourVariant.getItems().addAll(behaviours);
         this.animalBehaviourVariant.setValue("CompletePredestination");

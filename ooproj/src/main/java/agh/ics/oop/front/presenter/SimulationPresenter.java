@@ -23,7 +23,7 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.util.*;
 
-public class SimulationPresenter implements MapChangeListener, Initializable {
+public class SimulationPresenter implements SimulationChangeListener, Initializable {
     private static final int CELL_WIDTH = 50;
     private static final int CELL_HEIGHT = 50;
     @FXML
@@ -70,28 +70,29 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
     }
 
     @Override
-    public void mapChanged(AbstractWorldMap map, String message) {
+    public void update(Simulation simulation) {
         Platform.runLater(() -> {
             try {
                 drawMap();
-                if (statsBoolean){
+                if (statsBoolean) {
                     updateStats();
-                }else {
+                } else {
                     clearStats();
                 }
-                if(this.displayStatsAnimal != null){
+                if (this.displayStatsAnimal != null) {
                     updateAnimalStats();
-                }else {
+                } else {
                     clearAnimalStats();
                 }
-            } catch (InterruptedException ex){
-                ex.printStackTrace();
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
             }
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(3000), event -> {}));
             timeline.play();
         });
     }
-    //animal stats
+
+    // Animal stats
     private void updateAnimalStats() {
         this.animalGenome.setText("Animal genome: " + displayStatsAnimal.getGenes());
         this.animalCurrentGenome.setText("Current genome: " + displayStatsAnimal.getCurrentGene());
@@ -112,9 +113,9 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
         this.dayOfDeath.setText("");
     }
 
-    //main stats
+    // Main stats
     private void updateStats() {
-        //System.out.println("STATS:");
+        // System.out.println("STATS:");
         this.animalsAmount.setText("Animals amount: " + this.worldMap.getAnimals().size());
         this.plantsAmount.setText("Plants amount: " + this.worldMap.getGrasses().size());
         this.emptySpaces.setText("Empty spaces: " + this.worldMap.countEmptySpaces());
@@ -135,7 +136,7 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
     }
 
 
-    //cleaner display
+    // Cleaner display
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 
@@ -144,9 +145,6 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
         long tmp = Math.round(value);
         return (double) tmp / factor;
     }
-
-
-
 
     private void drawMap() throws InterruptedException {
         clearGrid();
@@ -170,12 +168,12 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
                 Canvas canvas;
                 canvas = createCanvas("/empty.png", currPos.x(), currPos.y());
                 mapGrid.add(canvas, i+1, rows-j);
-                //preferred grass
-                if(preferredGrassSpaces.contains(currPos)){
+                // Preferred grass
+                if (preferredGrassSpaces.contains(currPos)) {
                     canvas = createCanvas("/preferedSpace.png",currPos.x(),currPos.y());
                     mapGrid.add(canvas, i+1, rows-j);
                 }
-                //animal is the most important so it goes first
+                // Animal is the most important so it goes first
                 if (strongestAnimals.get(currPos) != null) {
                     Animal rat = strongestAnimals.get(currPos);
                     char rotation = switch (rat.getDirection()) {
@@ -213,7 +211,7 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
         }
 
 
-        //adding constraints
+        // Adding constraints
         for (int i = 0; i < rows; i++){
             mapGrid.getRowConstraints().add(new RowConstraints(CELL_HEIGHT));
         }
