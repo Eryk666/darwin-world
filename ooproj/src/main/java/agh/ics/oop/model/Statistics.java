@@ -9,13 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 public class Statistics {
-    private final Simulation simulation;
     private final AbstractWorldMap worldMap;
 
 
-    public Statistics(Simulation simulation) {
-        this.simulation = simulation;
-        this.worldMap = simulation.getWorldMap();
+    public Statistics(AbstractWorldMap worldMap) {
+        this.worldMap = worldMap;
     }
 
     public String countEmptySpaces(){

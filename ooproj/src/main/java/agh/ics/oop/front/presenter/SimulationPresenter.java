@@ -72,9 +72,9 @@ public class SimulationPresenter implements SimulationChangeListener, Initializa
     }
 
     @Override
-    public void update(Simulation simulation) {
+    public void update(AbstractWorldMap worldMap) {
         Platform.runLater(() -> {
-            this.statistics = new Statistics(simulation);
+            this.statistics = new Statistics(worldMap);
             try {
                 drawMap();
                 if (statsBoolean) {
