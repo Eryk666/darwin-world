@@ -115,13 +115,14 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
     //main stats
     private void updateStats() {
         //System.out.println("STATS:");
+
         this.animalsAmount.setText("Animals amount: " + this.worldMap.getAnimals().size());
         this.plantsAmount.setText("Plants amount: " + this.worldMap.getGrasses().size());
         this.emptySpaces.setText("Empty spaces: " + this.worldMap.countEmptySpaces());
         this.mostPopularGenome.setText("Most popular genome: " + this.worldMap.commonGenes());
-        this.averageEnergy.setText("Average energy: " + round(this.worldMap.averageEnergy(),2));
-        this.deadAnimalsLifespan.setText("Average dead animal lifespan: " + round(this.worldMap.averageDeadAge(),2));
-        this.animalsPredecessors.setText("Average alive animal predecessors amount: " + round(this.worldMap.averageAlivePredecessors(),2));
+        this.averageEnergy.setText("Average energy: " + Round.round(this.worldMap.averageEnergy(),2));
+        this.deadAnimalsLifespan.setText("Average dead animal lifespan: " + Round.round(this.worldMap.averageDeadAge(),2));
+        this.animalsPredecessors.setText("Average alive animal predecessors amount: " + Round.round(this.worldMap.averageAlivePredecessors(),2));
     }
 
     private void clearStats(){
@@ -135,20 +136,11 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
     }
 
 
-    //cleaner display
-    public static double round(double value, int places) {
-        if (places < 0) throw new IllegalArgumentException();
-
-        long factor = (long) Math.pow(10, places);
-        value = value * factor;
-        long tmp = Math.round(value);
-        return (double) tmp / factor;
-    }
 
 
 
 
-    private void drawMap() throws InterruptedException {
+    private void drawMap(Simulation simulation) throws InterruptedException {
         clearGrid();
 
         Boundary currBoundary = this.worldMap.getMapBoundary();
@@ -160,6 +152,7 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
         Map<Vector2d, Animal> strongestAnimals = this.worldMap.getStrongestAnimals();
         Map<Vector2d, Grass> grassMap = this.worldMap.getGrasses();
         ArrayList<Vector2d> preferredGrassSpaces = this.worldMap.generatePreferredGrassSpaces();
+        Statistics
         List<Integer> bestGenome = this.worldMap.commonGenes();
 
         System.out.println("Grass size:" + grassMap.size());
