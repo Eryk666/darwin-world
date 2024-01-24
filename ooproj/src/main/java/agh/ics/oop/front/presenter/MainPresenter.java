@@ -18,6 +18,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -67,6 +68,8 @@ public class MainPresenter implements Initializable {
     public TextField genomeLength;
     @FXML
     public ChoiceBox<String> animalBehaviourVariant;
+    @FXML
+    public CheckBox saveToCSVCheckBox;
 
 
     @FXML
@@ -83,11 +86,6 @@ public class MainPresenter implements Initializable {
 
         // Select map
         String selectedMap = this.mapVariant.getValue();
-        if("EarthMap".equals(selectedMap)){
-            System.out.println("Earth Default config");
-        }else {
-            throw new IOException("how?");
-        }
 
         // Select grass (bc we don't do anything in map we select the map here)
         String selectedGrass = this.grassVariant.getValue();
@@ -142,6 +140,8 @@ public class MainPresenter implements Initializable {
             System.out.println("Funky Animal");
         } else throw new IOException("how?");
 
+        boolean saveToFile = this.saveToCSVCheckBox.isSelected();
+
         // Create new scene with simulation
 
         System.out.println("entered thread");
@@ -168,8 +168,6 @@ public class MainPresenter implements Initializable {
                 grassGrownPerDay,energyPerGrass);
 
         simulation.subscribe(presenter);
-        // TODO let users choose if simulation should be saved to csv file
-        boolean saveToFile = true;
         if (saveToFile) {
             SimulationChangeListener simulationChangeListener = new SimulationDataRecorder();
             simulation.subscribe(simulationChangeListener);
