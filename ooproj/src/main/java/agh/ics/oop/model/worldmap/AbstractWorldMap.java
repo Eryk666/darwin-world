@@ -20,6 +20,10 @@ public abstract class AbstractWorldMap {
         this.reproductionEnergyMinimum = reproductionEnergyMinimum;
     }
 
+    public List<Animal> getDeadAnimals(){
+        return this.deadAnimals;
+    }
+
     public int getReproductionEnergyMinimum(){
         return  this.reproductionEnergyMinimum;
     }
@@ -151,74 +155,6 @@ public abstract class AbstractWorldMap {
         });
     }
 
-    public int countEmptySpaces(){
-        int returnValue = 0;
-        for (int i = this.mapBoundary.bottomLeft().x(); i < this.mapBoundary.upperRight().x() ; i++) {
-            for (int j = this.mapBoundary.bottomLeft().y(); j < this.mapBoundary.upperRight().y() ; j++) {
-                Vector2d position = new Vector2d(i,j);
-                boolean isEmpty = true;
-                for (Animal animal : animals) {
-                    if(animal.getPosition().equals(position)){
-                        isEmpty = false;
-                        break;
-                    }
-                }
-                if (grasses.containsKey(position)) {
-                    isEmpty = false;
-                }
-                if (isEmpty) {
-                    returnValue++;
-                }
-            }
-        }
-        return returnValue;
-    }
-
-    public List<Integer> commonGenes(){
-        Map<List<Integer>, Integer> geneCounts = new HashMap<>();
-
-        for (Animal animal : animals) {
-            List<Integer> genes = animal.getGenes();
-
-            geneCounts.put(genes, geneCounts.getOrDefault(genes, 0) + 1);
-        }
-
-        // Step 4: Find the gene list with the maximum occurrence
-        List<Integer> mostOccurringGenes = null;
-        int maxOccurrences = 0;
-
-        for (Map.Entry<List<Integer>, Integer> entry : geneCounts.entrySet()) {
-            if (entry.getValue() > maxOccurrences) {
-                maxOccurrences = entry.getValue();
-                mostOccurringGenes = entry.getKey();
-            }
-        }
-        return mostOccurringGenes;
-    }
-
-    public double averageEnergy(){
-        double animalEnergy = 0;
-        for (Animal animal : this.animals) {
-            animalEnergy += animal.getEnergy();
-        }
-        return animalEnergy/this.animals.size();
-    }
-
-    public double averageDeadAge(){
-        double animalAge = 0;
-        for (Animal deadAnimal : deadAnimals) {
-            animalAge += deadAnimal.getAge();
-        }
-        return  animalAge/deadAnimals.size();
-    }
-
-    public double averageAlivePredecessors(){
-        double animalChildren = 0;
-        for (Animal animal : this.animals) {
-            animalChildren += animal.getDescendantsAmount(new ArrayList<>());
-        }
-        return animalChildren/this.animals.size();
-    }
 
     public abstract ArrayList<Vector2d> generatePreferredGrassSpaces();
 

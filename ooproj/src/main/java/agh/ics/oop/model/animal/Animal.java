@@ -230,16 +230,7 @@ public class Animal {
 
     @Override
     public String toString() {
-        return switch (this.direction){
-            case NORTH -> "N";
-            case NORTH_EAST -> "NE";
-            case EAST -> "E";
-            case SOUTH_EAST -> "SE";
-            case SOUTH -> "S";
-            case SOUTH_WEST -> "SW";
-            case WEST -> "W";
-            case NORTH_WEST -> "NW";
-        };
+        return this.direction.toString();
     }
 
     // True if this animal is stronger than the other,
