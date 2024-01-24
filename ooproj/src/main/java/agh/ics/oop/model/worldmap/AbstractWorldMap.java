@@ -10,14 +10,12 @@ public abstract class AbstractWorldMap {
     protected final List<Animal> animals;
     protected final List<Animal> deadAnimals;
     protected final Map<Vector2d, Grass> grasses;
-    protected final ArrayList<MapChangeListener> observers;
     protected final int reproductionEnergyMinimum;
     protected boolean paused;
     public AbstractWorldMap(Boundary mapBoundary, int reproductionEnergyMinimum) {
         this.mapBoundary = mapBoundary;
         this.animals = new ArrayList<>();
         this.grasses = new HashMap<>();
-        this.observers = new ArrayList<>();
         this.deadAnimals = new ArrayList<>();
         this.reproductionEnergyMinimum = reproductionEnergyMinimum;
     }
@@ -79,8 +77,8 @@ public abstract class AbstractWorldMap {
                 ) {
                     animal.rotateAnimal(4);
                 }
-            } catch (GeneOutOfRangeException ex){
-                ex.printStackTrace();
+            } catch (GeneOutOfRangeException e) {
+                System.out.println(e.getMessage());
             }
         });
     }
@@ -153,20 +151,6 @@ public abstract class AbstractWorldMap {
         });
     }
 
-    public void registerObserver(MapChangeListener observer){
-        this.observers.add(observer);
-    }
-
-    public void unregisterObserver(MapChangeListener observer){
-        this.observers.remove(observer);
-    }
-
-    public synchronized void updateMap(){
-        for (MapChangeListener observer : this.observers){
-            observer.mapChanged(this, "position");
-        }
-    }
-
     public int countEmptySpaces(){
         int returnValue = 0;
         for (int i = this.mapBoundary.bottomLeft().x(); i < this.mapBoundary.upperRight().x() ; i++) {
@@ -179,10 +163,10 @@ public abstract class AbstractWorldMap {
                         break;
                     }
                 }
-                if(grasses.containsKey(position)){
+                if (grasses.containsKey(position)) {
                     isEmpty = false;
                 }
-                if(isEmpty){
+                if (isEmpty) {
                     returnValue++;
                 }
             }
