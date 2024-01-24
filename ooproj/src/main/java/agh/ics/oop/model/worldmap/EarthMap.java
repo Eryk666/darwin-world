@@ -72,12 +72,14 @@ public class EarthMap extends AbstractWorldMap {
     }
 
     private Boundary getEquator() {
-        int mapDivider = (mapBoundary.upperRight().y()-mapBoundary.bottomLeft().y())/5;
+        int mapHeight = mapBoundary.upperRight().y()-mapBoundary.bottomLeft().y()+1;
+        Vector2d lowerBound = new Vector2d(this.mapBoundary.bottomLeft().x(),
+                        (int) Math.round(mapHeight*0.4) + 1);
 
-        return new Boundary(new Vector2d(this.mapBoundary.bottomLeft().x(),
-                this.mapBoundary.bottomLeft().y()+mapDivider*2+1)
-                ,new Vector2d(this.mapBoundary.upperRight().x(),
-                this.mapBoundary.bottomLeft().y()+mapDivider*3));
+        Vector2d upperBound = new Vector2d(this.mapBoundary.upperRight().x(),
+                (int) Math.round(mapHeight*0.6));
+
+        return new Boundary(lowerBound,upperBound);
     }
 
     @Override
