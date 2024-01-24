@@ -1,6 +1,5 @@
 package agh.ics.oop.model;
 
-import agh.ics.oop.model.csv.CSVEventListener;
 import agh.ics.oop.model.animal.Animal;
 import agh.ics.oop.model.worldmap.AbstractWorldMap;
 
@@ -17,7 +16,7 @@ public class Simulation implements Runnable {
     private final int initialGrassNumber;
     private final int energyPerGrass;
     private final int grassGrownPerDay;
-    private final List<CSVEventListener> listeners = new ArrayList<>();
+    private final List<SimulationChangeListener> listeners = new ArrayList<>();
     private int daysPassed = 0;
 
     public Simulation(
@@ -43,7 +42,6 @@ public class Simulation implements Runnable {
             worldMap.placeAnimal(animal);
         }
         worldMap.growGrass(initialGrassNumber);
-        System.out.println(worldMap.getGrasses().size());
         notifyListeners();
 
         // Simulation ends when all animals are dead
@@ -55,7 +53,6 @@ public class Simulation implements Runnable {
             daysPassed += 1;
             notifyListeners();
             worldMap.updateMap();
-            System.out.println(worldMap.getGrasses().size());
         }
     }
 
@@ -70,7 +67,7 @@ public class Simulation implements Runnable {
         try {
             Thread.sleep(3000);
         }catch (InterruptedException e){
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -86,17 +83,17 @@ public class Simulation implements Runnable {
         return daysPassed;
     }
 
-    public void subscribe(CSVEventListener listener) {
+    public void subscribe(SimulationChangeListener listener) {
         listeners.add(listener);
     }
 
-    public void unsubscribe(CSVEventListener listener) {
+    public void unsubscribe(SimulationChangeListener listener) {
         listeners.remove(listener);
     }
 
     public void notifyListeners() {
-        for (CSVEventListener listener : listeners) {
-            //listener.update(this);
+        for (SimulationChangeListener listener : listeners) {
+            listener.update(this);
         }
     }
 }

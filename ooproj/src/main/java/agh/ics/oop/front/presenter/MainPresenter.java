@@ -8,8 +8,8 @@ import agh.ics.oop.model.Simulation;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.animal.Animal;
 import agh.ics.oop.model.animal.FunkyAnimal;
-import agh.ics.oop.model.csv.CSVEventListener;
-import agh.ics.oop.model.csv.SimulationChangeListener;
+import agh.ics.oop.model.SimulationChangeListener;
+import agh.ics.oop.model.SimulationDataRecorder;
 import agh.ics.oop.model.worldmap.AbstractWorldMap;
 import agh.ics.oop.model.worldmap.EarthMap;
 import agh.ics.oop.model.worldmap.FunkyMap;
@@ -171,7 +171,7 @@ public class MainPresenter implements Initializable {
         // TODO let users choose if simulation should be saved to csv file
         boolean saveToFile = true;
         if (saveToFile) {
-            CSVEventListener simulationChangeListener = new SimulationChangeListener();
+            SimulationChangeListener simulationChangeListener = new SimulationDataRecorder();
             simulation.subscribe(simulationChangeListener);
         }
 

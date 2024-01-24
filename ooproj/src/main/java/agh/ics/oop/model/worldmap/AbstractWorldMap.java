@@ -158,7 +158,7 @@ public abstract class AbstractWorldMap {
 
     public synchronized void updateMap(){
         for (MapChangeListener observer : this.observers){
-            observer.mapChanged(this,"position");
+            observer.mapChanged(this, "position");
         }
     }
 
