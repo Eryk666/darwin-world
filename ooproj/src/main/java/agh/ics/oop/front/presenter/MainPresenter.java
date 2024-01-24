@@ -3,13 +3,10 @@ package agh.ics.oop.front.presenter;
 
 import agh.ics.oop.front.InputParser;
 import agh.ics.oop.front.WrongInputException;
-import agh.ics.oop.model.Boundary;
-import agh.ics.oop.model.Simulation;
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.*;
 import agh.ics.oop.model.animal.Animal;
 import agh.ics.oop.model.animal.FunkyAnimal;
-import agh.ics.oop.model.SimulationChangeListener;
-import agh.ics.oop.model.SimulationDataRecorder;
+import agh.ics.oop.model.csv.CSVManager;
 import agh.ics.oop.model.worldmap.AbstractWorldMap;
 import agh.ics.oop.model.worldmap.EarthMap;
 import agh.ics.oop.model.worldmap.FunkyMap;
@@ -25,23 +22,23 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 public class MainPresenter implements Initializable {
+    @FXML
+    public ChoiceBox<String> chosenConfig;
+    @FXML
+    public Button loadConfigButton;
     @FXML
     public TextField mapHeight;
     @FXML
     public TextField mapWidth;
     @FXML
     public ChoiceBox<String> mapVariant;
-    @FXML
-    public Button startButton;
     @FXML
     public TextField startGrassAmount;
     @FXML
@@ -70,81 +67,25 @@ public class MainPresenter implements Initializable {
     public ChoiceBox<String> animalBehaviourVariant;
     @FXML
     public CheckBox saveToCSVCheckBox;
+    @FXML
+    public Button saveConfigButton;
+    @FXML
+    public TextField configName;
+    @FXML
+    public Button startButton;
 
 
     @FXML
-    private void simulationStartButton() throws IOException, InterruptedException, WrongInputException {
-        // Parse inputs
-        Boundary mapBounds = new Boundary(new Vector2d(1,1),
-                new Vector2d(InputParser.parse(this.mapWidth.getText()),InputParser.parse(this.mapHeight.getText())));
-        int initialGrassNumber = InputParser.parse(this.startGrassAmount.getText());
-        int energyPerGrass = InputParser.parse(this.energyPerGrass.getText());
-        int grassGrownPerDay = InputParser.parse(this.dailyGrassGrowth.getText());
-        int reproductionEnergyMinimum = InputParser.parse(this.energyForHorny.getText());
-        int reproductionEnergyCost = InputParser.parse(this.reproductionEnergyCost.getText());
+    private void simulationStartButton() throws WrongInputException {
+        Simulation simulation = generateSimulation();
 
-
-        // Select map
-        String selectedMap = this.mapVariant.getValue();
-
-        // Select grass (bc we don't do anything in map we select the map here)
-        String selectedGrass = this.grassVariant.getValue();
-        AbstractWorldMap map;
-        if("ForestedEquators".equals(selectedGrass)){
-            map = new EarthMap(mapBounds,reproductionEnergyMinimum);
-            System.out.println("Selected ForestedEquators");
-        } else if ("CreepingJungle".equals(selectedGrass)) {
-            map = new FunkyMap(mapBounds, reproductionEnergyMinimum);
-            System.out.println("Selected CreepingJungle");
-        }else{
-            throw new IOException("how?");
+        if (this.saveToCSVCheckBox.isSelected()) {
+            SimulationChangeListener simulationChangeListener = new SimulationDataRecorder();
+            simulation.subscribe(simulationChangeListener);
         }
-
-        // Animals
-        int animalAmount = InputParser.parse(this.initialAnimalAmount.getText());
-        int minMutation = InputParser.parse(this.minMutationAmount.getText());
-        int maxMutation = InputParser.parse(this.maxMutationAmount.getText());
-        int genomeLength = InputParser.parse(this.genomeLength.getText());
-        if (genomeLength < maxMutation){
-            throw new WrongInputException("Genome length " + genomeLength + " is smaller than maxMutation " + maxMutation);
-        }
-        int initialAnimalEnergy = InputParser.parse(this.initialAnimalEnergy.getText());
-
-        // Select mutations
-        String selectedMutations = this.mutationVariant.getValue();
-        if("FullRandomness".equals(selectedMutations)){
-            System.out.println("Mutations Default config");
-        } else {
-            throw new IOException("how?");
-        }
-
-        // Select behaviour
-        String selectedBehaviour = this.animalBehaviourVariant.getValue();
-        // Normal animal is creating other normal animals, so we have to just put into
-        // simulation correct animal type
-        ArrayList<Animal> animals = new ArrayList<>();
-        Random r = new Random();
-
-        if("CompletePredestination".equals(selectedBehaviour)){
-            for (int i = 0; i < animalAmount; i++) {
-                animals.add(new Animal(new Vector2d(r.nextInt(mapBounds.upperRight().x()),r.nextInt(mapBounds.upperRight().y())),
-                        initialAnimalEnergy,createRandomGenes(genomeLength),minMutation,maxMutation));
-            }
-            System.out.println("Default Animal");
-        } else if ("BackAndForth".equals(selectedBehaviour)) {
-            for (int i = 0; i < animalAmount; i++) {
-                animals.add(new FunkyAnimal(new Vector2d(r.nextInt(mapBounds.upperRight().x()),r.nextInt(mapBounds.upperRight().y())),
-                        initialAnimalEnergy,createRandomGenes(genomeLength),minMutation,maxMutation));
-
-            }
-            System.out.println("Funky Animal");
-        } else throw new IOException("how?");
-
-        boolean saveToFile = this.saveToCSVCheckBox.isSelected();
 
         // Create new scene with simulation
 
-        System.out.println("entered thread");
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
         Stage stage = new Stage();
@@ -163,18 +104,10 @@ public class MainPresenter implements Initializable {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         SimulationPresenter presenter = loader.getController();
-        // Works up to here
-        Simulation simulation = new Simulation(map,animals,reproductionEnergyMinimum,reproductionEnergyCost,initialGrassNumber,
-                grassGrownPerDay,energyPerGrass);
 
         simulation.subscribe(presenter);
-        if (saveToFile) {
-            SimulationChangeListener simulationChangeListener = new SimulationDataRecorder();
-            simulation.subscribe(simulationChangeListener);
-        }
 
-
-        presenter.setWorldMap(map);
+        presenter.setWorldMap(simulation.getWorldMap());
         stage.setMaximized(true);
         stage.show();
 
@@ -182,7 +115,98 @@ public class MainPresenter implements Initializable {
         thread.start();
     }
 
-    public List<Integer> createRandomGenes(int genomeLength){
+    private Simulation generateSimulation() throws WrongInputException {
+        return new Simulation(
+            generateWorldMap(),
+            generateInitialAnimals(),
+            InputParser.parse(this.energyForHorny.getText()),
+            InputParser.parse(this.reproductionEnergyCost.getText()),
+            InputParser.parse(this.startGrassAmount.getText()),
+            InputParser.parse(this.dailyGrassGrowth.getText()),
+            InputParser.parse(this.energyPerGrass.getText())
+        );
+    }
+
+    private AbstractWorldMap generateWorldMap() throws WrongInputException {
+        String grassVariant = this.grassVariant.getValue();
+        Boundary mapBoundary = new Boundary(
+            new Vector2d(1, 1),
+            new Vector2d(
+                InputParser.parse(this.mapWidth.getText()),
+                InputParser.parse(this.mapHeight.getText())
+            )
+        );
+
+        switch (grassVariant) {
+            case "ForestedEquators" -> {
+                return new EarthMap(mapBoundary, InputParser.parse(energyForHorny.getText()));
+            }
+            case "CreepingJungle" -> {
+                return new FunkyMap(mapBoundary, InputParser.parse(energyForHorny.getText()));
+            }
+            default -> throw new RuntimeException("Map variant " + grassVariant + " does not exist!");
+        }
+    }
+
+    private List<Animal> generateInitialAnimals() throws WrongInputException {
+        ArrayList<Animal> animals = new ArrayList<>();
+        Random random = new Random();
+        String selectedBehaviour = this.animalBehaviourVariant.getValue();
+        int animalAmount = InputParser.parse(this.initialAnimalAmount.getText());
+        int initialAnimalEnergy = InputParser.parse(this.initialAnimalEnergy.getText());
+        int minMutation = InputParser.parse(this.minMutationAmount.getText());
+        int maxMutation = InputParser.parse(this.maxMutationAmount.getText());
+        int genomeLength = InputParser.parse(this.genomeLength.getText());
+        Boundary positionBoundary = new Boundary(
+            new Vector2d(1, 1),
+            new Vector2d(
+                InputParser.parse(this.mapWidth.getText()),
+                InputParser.parse(this.mapHeight.getText())
+            )
+        );
+
+        if (genomeLength < maxMutation) {
+            throw new WrongInputException(
+                "Genome length " + genomeLength + " is smaller than maxMutation " + maxMutation
+            );
+        }
+
+        switch (selectedBehaviour) {
+            case "CompletePredestination" -> {
+                for (int i = 0; i < animalAmount; i++) {
+                    animals.add(new Animal(
+                        new Vector2d(
+                            random.nextInt(positionBoundary.upperRight().x()),
+                            random.nextInt(positionBoundary.upperRight().y())),
+                        initialAnimalEnergy,
+                        createRandomGenes(genomeLength),
+                        minMutation,
+                        maxMutation
+                    ));
+                }
+            }
+            case "BackAndForth" -> {
+                for (int i = 0; i < animalAmount; i++) {
+                    animals.add(new FunkyAnimal(
+                        new Vector2d(
+                            random.nextInt(positionBoundary.upperRight().x()),
+                            random.nextInt(positionBoundary.upperRight().y())),
+                        initialAnimalEnergy,
+                        createRandomGenes(genomeLength),
+                        minMutation,
+                        maxMutation
+                    ));
+                }
+            }
+            default -> throw new RuntimeException(
+                "Behaviour variant " + selectedBehaviour + " does not exist!"
+            );
+        }
+
+        return animals;
+    }
+
+    public List<Integer> createRandomGenes(int genomeLength) {
         ArrayList<Integer> genes = new ArrayList<>();
         Random r = new Random();
         for (int i = 0; i < genomeLength; i++) {
@@ -191,8 +215,83 @@ public class MainPresenter implements Initializable {
         return genes;
     }
 
+    public void loadConfig() {
+        String chosenConfigName = this.chosenConfig.getValue();
+        String[] chosenConfig;
+
+        if (chosenConfigName == null) {
+            return;
+        }
+
+        try {
+            chosenConfig = CSVManager.readFromFile("src/main/resources/configs.csv").stream()
+                .filter(config -> config[0].equals(chosenConfigName))
+                .findFirst()
+                .orElse(null);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        if (chosenConfig == null) {
+            return;
+        }
+
+        this.mapHeight.setText(chosenConfig[1]);
+        this.mapWidth.setText(chosenConfig[2]);
+        this.mapVariant.setValue(chosenConfig[3]);
+        this.startGrassAmount.setText(chosenConfig[4]);
+        this.energyPerGrass.setText(chosenConfig[5]);
+        this.dailyGrassGrowth.setText(chosenConfig[6]);
+        this.grassVariant.setValue(chosenConfig[7]);
+        this.initialAnimalAmount.setText(chosenConfig[8]);
+        this.initialAnimalEnergy.setText(chosenConfig[9]);
+        this.reproductionEnergyCost.setText(chosenConfig[10]);
+        this.energyForHorny.setText(chosenConfig[11]);
+        this.minMutationAmount.setText(chosenConfig[12]);
+        this.maxMutationAmount.setText(chosenConfig[13]);
+        this.mutationVariant.setValue(chosenConfig[14]);
+        this.genomeLength.setText(chosenConfig[15]);
+        this.animalBehaviourVariant.setValue(chosenConfig[16]);
+        this.saveToCSVCheckBox.setSelected(false);
+    }
+
+    public void saveConfig() {
+        String configFile = "src/main/resources/configs.csv";
+        String[] config = new String[] {
+            configName.getText(),
+            mapHeight.getText(),
+            mapWidth.getText(),
+            mapVariant.getValue(),
+            startGrassAmount.getText(),
+            energyPerGrass.getText(),
+            dailyGrassGrowth.getText(),
+            grassVariant.getValue(),
+            initialAnimalAmount.getText(),
+            initialAnimalEnergy.getText(),
+            reproductionEnergyCost.getText(),
+            energyForHorny.getText(),
+            minMutationAmount.getText(),
+            maxMutationAmount.getText(),
+            mutationVariant.getValue(),
+            genomeLength.getText(),
+            animalBehaviourVariant.getValue()
+        };
+
+        CSVManager.writeToFile(configFile, Collections.singletonList(config));
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Saved configurations
+        try {
+            String[] savedConfigs = CSVManager.readFromFile("src/main/resources/configs.csv").stream()
+                .map(config -> config[0])
+                .toArray(String[]::new);
+            this.chosenConfig.getItems().addAll(savedConfigs);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
         // Map variant
         String[] maps = {"EarthMap"};
         this.mapVariant.getItems().addAll(maps);

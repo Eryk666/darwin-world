@@ -64,7 +64,7 @@ public class Simulation implements Runnable {
 
         try {
             Thread.sleep(2000);
-        }catch (InterruptedException e){
+        } catch (InterruptedException e) {
             System.out.println(e.getMessage());
         }
     }

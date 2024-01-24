@@ -8,74 +8,84 @@
     <ImageView fitHeight="786.0" fitWidth="958.0" pickOnBounds="true" preserveRatio="true">
         <Image url="@ratBackground.jpg" />
     </ImageView>
-    <VBox minHeight="0.0" minWidth="0.0" prefHeight="307.0" prefWidth="169.0" spacing="10" style="-fx-padding: 30;">
+    <VBox minHeight="0.0" minWidth="0.0" prefHeight="307.0" prefWidth="169.0" spacing="10" style="-fx-padding: 30 0 30 30;">
         <HBox>
-            <Label  prefHeight="17.0" prefWidth="164.0" text="map height" />
-            <TextField fx:id="mapHeight" prefHeight="25.0" prefWidth="164.0" text="10" />
+            <Label  prefHeight="17.0" prefWidth="180.0" text="map height" />
+            <TextField fx:id="mapHeight" prefHeight="25.0" prefWidth="180.0" text="10" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="map width" />
-            <TextField fx:id="mapWidth" prefHeight="25.0" prefWidth="164.0" text="10" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="map width" />
+            <TextField fx:id="mapWidth" prefHeight="25.0" prefWidth="180.0" text="10" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="map variant" />
-            <ChoiceBox fx:id="mapVariant" prefHeight="25.0" prefWidth="164.0" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="map variant" />
+            <ChoiceBox fx:id="mapVariant" prefHeight="25.0" prefWidth="180.0" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="initial grass amount" />
-            <TextField fx:id="startGrassAmount" prefHeight="25.0" prefWidth="164.0" text="10" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="initial grass amount" />
+            <TextField fx:id="startGrassAmount" prefHeight="25.0" prefWidth="180.0" text="10" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="energy per grass" />
-            <TextField fx:id="energyPerGrass" prefHeight="25.0" prefWidth="164.0" text="10" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="energy per grass" />
+            <TextField fx:id="energyPerGrass" prefHeight="25.0" prefWidth="180.0" text="10" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="daily grass growth" />
-            <TextField fx:id="dailyGrassGrowth" prefHeight="25.0" prefWidth="164.0" text="10" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="daily grass growth" />
+            <TextField fx:id="dailyGrassGrowth" prefHeight="25.0" prefWidth="180.0" text="10" />
         </HBox>
         <HBox>
-            <Label  prefHeight="17.0" prefWidth="164.0" text="grass growth variant" />
-            <ChoiceBox fx:id="grassVariant" prefHeight="25.0" prefWidth="164.0" />
+            <Label  prefHeight="17.0" prefWidth="180.0" text="grass growth variant" />
+            <ChoiceBox fx:id="grassVariant" prefHeight="25.0" prefWidth="180.0" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="initial animal amount" />
-            <TextField fx:id="initialAnimalAmount" prefHeight="25.0" prefWidth="164.0" text="10" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="initial animal amount" />
+            <TextField fx:id="initialAnimalAmount" prefHeight="25.0" prefWidth="180.0" text="10" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="initial animal energy" />
-            <TextField fx:id="initialAnimalEnergy" prefHeight="25.0" prefWidth="164.0" text="100" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="initial animal energy" />
+            <TextField fx:id="initialAnimalEnergy" prefHeight="25.0" prefWidth="180.0" text="100" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="energy required for horny" />
-            <TextField fx:id="energyForHorny" prefHeight="25.0" prefWidth="164.0" text="69" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="reproduction energy cost" />
+            <TextField fx:id="energyForHorny" prefHeight="25.0" prefWidth="180.0" text="69" />
         </HBox>
         <HBox>
-            <Label text="energy given to child by parents" />
-            <TextField fx:id="reproductionEnergyCost" prefHeight="25.0" prefWidth="164.0" text="20" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="reproduction energy minimum" />
+            <TextField fx:id="reproductionEnergyCost" prefHeight="25.0" prefWidth="180.0" text="20" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="min mutation amount" />
-            <TextField fx:id="minMutationAmount" prefHeight="25.0" prefWidth="164.0" text="0" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="min mutation amount" />
+            <TextField fx:id="minMutationAmount" prefHeight="25.0" prefWidth="180.0" text="0" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="max mutation amount" />
-            <TextField fx:id="maxMutationAmount" prefHeight="25.0" prefWidth="164.0" text="0" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="max mutation amount" />
+            <TextField fx:id="maxMutationAmount" prefHeight="25.0" prefWidth="180.0" text="0" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="mutation variant" />
-            <ChoiceBox fx:id="mutationVariant" prefHeight="25.0" prefWidth="164.0" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="mutation variant" />
+            <ChoiceBox fx:id="mutationVariant" prefHeight="25.0" prefWidth="180.0" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="genome length" />
-            <TextField fx:id="genomeLength" prefHeight="25.0" prefWidth="164.0" text="10" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="genome length" />
+            <TextField fx:id="genomeLength" prefHeight="25.0" prefWidth="180.0" text="10" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="animal behaviour variant" />
-            <ChoiceBox fx:id="animalBehaviourVariant" prefHeight="25.0" prefWidth="164.0" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="animal behaviour variant" />
+            <ChoiceBox fx:id="animalBehaviourVariant" prefHeight="25.0" prefWidth="180.0" />
         </HBox>
         <HBox>
-            <Label prefHeight="17.0" prefWidth="164.0" text="save data to csv file" />
+            <Label prefHeight="17.0" prefWidth="180.0" text="save data to csv file" />
             <CheckBox fx:id="saveToCSVCheckBox" />
+        </HBox>
+        <HBox>
+            <Label prefHeight="17.0" prefWidth="180.0" text="load config" />
+            <ChoiceBox fx:id="chosenConfig" prefHeight="25.0" prefWidth="130.0" />
+            <Button fx:id="loadConfigButton" prefHeight="17.0" prefWidth="50.0" mnemonicParsing="false" onAction="#loadConfig" text="load" />
+        </HBox>
+        <HBox>
+            <Label prefHeight="17.0" prefWidth="180.0" text="save config as" />
+            <TextField fx:id="configName" prefHeight="25.0" prefWidth="130.0" />
+            <Button fx:id="saveConfigButton" prefHeight="17.0" prefWidth="50.0" mnemonicParsing="false" onAction="#saveConfig" text="save" />
         </HBox>
         <HBox alignment="CENTER" style="-fx-padding: 20 0 0 0;">
             <Button fx:id="startButton" mnemonicParsing="false" onAction="#simulationStartButton" text="LET HIM COOK" />

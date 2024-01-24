@@ -9,10 +9,7 @@ import agh.ics.oop.model.Vector2d;
 import java.util.*;
 
 public class FunkyMap extends EarthMap{
-    public FunkyMap(
-            Boundary mapBoundary,
-            int reproductionEnergyMinimum
-            ) {
+    public FunkyMap(Boundary mapBoundary, int reproductionEnergyMinimum) {
         super(mapBoundary, reproductionEnergyMinimum);
     }
 

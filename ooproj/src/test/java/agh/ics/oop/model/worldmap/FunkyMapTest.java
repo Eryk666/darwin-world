@@ -10,7 +10,7 @@ public class FunkyMapTest {
     @Test
     void growGrass() {
         //I will check if newly generated map have good amount of grass
-        AbstractWorldMap map = new FunkyMap(new Boundary(new Vector2d(0,0),new Vector2d(100,100)),2137);
+        AbstractWorldMap map = new FunkyMap(new Boundary(new Vector2d(0,0),new Vector2d(100,100)), 0);
         //no grass
         map.growGrass(10); //because grass is empty I supper it from EarthMap
         map.growGrass(10); // now we do from FunkyMap method
