@@ -1,24 +1,23 @@
-package agh.ics.oop.model.csv;
+package agh.ics.oop.model;
 
-import agh.ics.oop.model.Simulation;
 import agh.ics.oop.model.animal.Animal;
+import agh.ics.oop.model.csv.CSVManager;
 
-import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-public class SimulationChangeListener implements CSVEventListener {
+public class SimulationDataRecorder implements SimulationChangeListener {
     @Override
     public void update(Simulation simulation) {
         String filePath = "logs/simulation_" + simulation.getSimulationID().toString() + ".csv";
 
         // If file did not exist we must append column names at the start
         if (!Files.exists(Path.of(filePath))) {
-            writeToFile(filePath, Collections.singletonList(getColumnNames()));
+            CSVManager.writeToFile(filePath, Collections.singletonList(getColumnNames()));
         }
 
-        writeToFile(filePath, collectData(simulation));
+        CSVManager.writeToFile(filePath, collectData(simulation));
     }
 
     private String[] getColumnNames() {
@@ -57,23 +56,5 @@ public class SimulationChangeListener implements CSVEventListener {
         }
 
         return data;
-    }
-
-    private static String parseToCSV(String[] dataEntry) {
-        return String.join(";", dataEntry);
-    }
-
-    public static void writeToFile(String fileName, List<String[]> data) {
-        try (
-            FileWriter fileWriter = new FileWriter(fileName, true);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            PrintWriter printWriter = new PrintWriter(bufferedWriter)
-        ) {
-            for (String[] entry : data) {
-                printWriter.println(parseToCSV(entry));
-            }
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
     }
 }
