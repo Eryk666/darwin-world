@@ -19,52 +19,40 @@ public class FunkyMap extends EarthMap{
     //everything the same apart from the grass growing
     @Override
     public void growGrass(int grassAmount) {
-
-        //get grass Map
-        Map<Vector2d, Grass> grassMap = getGrasses();
-        Boundary bound = getMapBoundary();
         //in case of grasses being empty
-        if(grassMap.isEmpty()){
+        if(this.grasses.isEmpty()){
             super.growGrass(grassAmount);
+            return;
         }
-        //1. add all grass neighbouring tiles to array and add other tiles to the other array
-        //doing two arrays at the same time because it's WAY easier
+        //bounds
+        Boundary bound = getMapBoundary();
+
+        //more popular positions
         ArrayList<Vector2d> junglePositions = generatePreferredGrassSpaces();
+
         ArrayList<Vector2d> steppesPositions = new ArrayList<>();
         for(int x = bound.bottomLeft().x(); x < bound.upperRight().x(); x++){
             for(int y = bound.bottomLeft().y(); y < bound.upperRight().y(); y++){
                 Vector2d currPos = new Vector2d(x,y);
-                if (grassMap.get(currPos) != null){
+                if (this.grasses.get(currPos) != null){
                     continue;
                 }
-                if (!isGrassNexTo(currPos,grassMap)) {
+                if (!isGrassNexTo(currPos,this.grasses)) {
                     steppesPositions.add(currPos);
                 }
             }
         }
-        //2. shuffle them randomly
-        Collections.shuffle(junglePositions);
-        Collections.shuffle(steppesPositions);
-        //3. add grass to first 80%*grassAmount or maximum possible grass spaces
-        Iterator<Vector2d> jungleIterator = junglePositions.iterator();
-        int addedGrass = 0;
-        while (jungleIterator.hasNext() && addedGrass < 0.8*grassAmount){
-            Vector2d currPos = jungleIterator.next();
-            grassMap.put(currPos,new Grass(currPos));
-            addedGrass++;
-        }
-        //4. add 20%*grassAmount or maximum possible grass spaces
-        Iterator<Vector2d> steppesIterator = steppesPositions.iterator();
-        addedGrass = 0;
-        while (steppesIterator.hasNext() && addedGrass < 0.2*grassAmount){
-            Vector2d currPos = steppesIterator.next();
-            grassMap.put(currPos,new Grass(currPos));
-            addedGrass++;
-        }
+
+        //Grow 80% on good spaces and 20% on bad ones
+        growGrassOn(junglePositions, grassAmount*0.8);
+
+        growGrassOn(steppesPositions,grassAmount*0.2);
     }
 
     @Override
     public ArrayList<Vector2d> generatePreferredGrassSpaces() {
+        if(this.grasses.isEmpty()){ return super.generatePreferredGrassSpaces(); }
+        //just bruteforce it
         ArrayList<Vector2d> junglePositions = new ArrayList<>();
         for(int x = this.mapBoundary.bottomLeft().x(); x <= this.mapBoundary.upperRight().x(); x++){
             for(int y = this.mapBoundary.bottomLeft().y(); y <= this.mapBoundary.upperRight().y(); y++){

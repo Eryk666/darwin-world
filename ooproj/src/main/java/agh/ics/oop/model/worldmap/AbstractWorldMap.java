@@ -158,4 +158,16 @@ public abstract class AbstractWorldMap {
 
     public abstract ArrayList<Vector2d> generatePreferredGrassSpaces();
 
+    protected void growGrassOn(ArrayList<Vector2d> positions, double amount){
+        Collections.shuffle(positions);
+        //3. add grass to first 80%*grassAmount or maximum possible grass spaces
+        Iterator<Vector2d> positionsIterator = positions.iterator();
+        int addedGrass = 0;
+        while (positionsIterator.hasNext() && addedGrass < amount){
+            Vector2d currPos = positionsIterator.next();
+            this.grasses.put(currPos,new Grass(currPos));
+            addedGrass++;
+        }
+    }
+
 }
