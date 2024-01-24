@@ -60,15 +60,14 @@ public class Simulation implements Runnable {
     }
 
     private void simulateDay()  {
-        worldMap.clearMapUpdate();
-        worldMap.removeDeadAnimals();
+        worldMap.removeDeadAnimals(daysPassed);
         worldMap.movementPhase();
         worldMap.feedingPhase(energyPerGrass);
         worldMap.reproductionPhase(reproductionEnergyCost);
         worldMap.growGrass(grassGrownPerDay);
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(5000);
         }catch (InterruptedException e){
             System.out.println(e);
         }
@@ -96,7 +95,7 @@ public class Simulation implements Runnable {
 
     public void notifyListeners() {
         for (CSVEventListener listener : listeners) {
-            //listener.update(this);
+            listener.update(this);
         }
     }
 }

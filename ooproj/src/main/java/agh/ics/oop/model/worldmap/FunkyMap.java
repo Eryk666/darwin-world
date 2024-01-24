@@ -29,7 +29,7 @@ public class FunkyMap extends EarthMap{
         }
         //1. add all grass neighbouring tiles to array and add other tiles to the other array
         //doing two arrays at the same time because it's WAY easier
-        ArrayList<Vector2d> junglePositions = new ArrayList<>();
+        ArrayList<Vector2d> junglePositions = generatePreferredGrassSpaces();
         ArrayList<Vector2d> steppesPositions = new ArrayList<>();
         for(int x = bound.bottomLeft().x(); x < bound.upperRight().x(); x++){
             for(int y = bound.bottomLeft().y(); y < bound.upperRight().y(); y++){
@@ -37,9 +37,7 @@ public class FunkyMap extends EarthMap{
                 if (grassMap.get(currPos) != null){
                     continue;
                 }
-                if (isGrassNexTo(currPos,grassMap)){
-                    junglePositions.add(currPos);
-                }else{
+                if (!isGrassNexTo(currPos,grassMap)) {
                     steppesPositions.add(currPos);
                 }
             }
@@ -63,6 +61,23 @@ public class FunkyMap extends EarthMap{
             grassMap.put(currPos,new Grass(currPos));
             addedGrass++;
         }
+    }
+
+    @Override
+    public ArrayList<Vector2d> generatePreferredGrassSpaces() {
+        ArrayList<Vector2d> junglePositions = new ArrayList<>();
+        for(int x = this.mapBoundary.bottomLeft().x(); x <= this.mapBoundary.upperRight().x(); x++){
+            for(int y = this.mapBoundary.bottomLeft().y(); y <= this.mapBoundary.upperRight().y(); y++){
+                Vector2d currPos = new Vector2d(x,y);
+                if (this.grasses.get(currPos) != null){
+                    continue;
+                }
+                if (isGrassNexTo(currPos,this.grasses)){
+                    junglePositions.add(currPos);
+                }
+            }
+        }
+        return junglePositions;
     }
 
     private boolean isGrassNexTo(Vector2d position, Map<Vector2d,Grass> grassMap){

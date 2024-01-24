@@ -19,6 +19,9 @@ public class Animal {
     protected int minMutationAmount;
     protected int maxMutationAmount;
 
+    protected int dayOfDeath;
+    protected int grassEatenAmount;
+
 
     public Animal(Vector2d position, int energy, List<Integer> genes, int minMutationAmount, int maxMutationAmount) {
         this.maxMutationAmount = maxMutationAmount;
@@ -31,9 +34,18 @@ public class Animal {
         this.age = 0;
         this.children = new ArrayList<>();
         rotateAnimal((int)(Math.random()*8)); // Random number between 0 and 7
+        this.grassEatenAmount = 0;
     }
 
     //getters&setters
+
+    public void setDayOfDeath(int dayOfDeath){
+        this.dayOfDeath = dayOfDeath;
+    }
+
+    public int getDayOfDeath(){
+        return this.dayOfDeath;
+    }
     public UUID getAnimalID() {
         return animalID;
     }
@@ -71,10 +83,13 @@ public class Animal {
     }
 
     //me when dfs
-    public int getDescendantsAmount(){
+    public int getDescendantsAmount(ArrayList<Animal> visited){
         int descendantsAmount = 0;
         for (Animal child : children) {
-            descendantsAmount += child.getDescendantsAmount() + 1;
+            if(!visited.contains(child)){
+                descendantsAmount += child.getDescendantsAmount(visited) + 1;
+                visited.add(child);
+            }
         }
         return descendantsAmount;
     }
@@ -99,6 +114,9 @@ public class Animal {
         this.age = age;
     }
 
+    public int getGrassEatenAmount(){
+        return this.grassEatenAmount;
+    }
 
     // Rotates animal clockwise
     public void rotateAnimal(int times) {
@@ -108,6 +126,7 @@ public class Animal {
         }
         this.direction = tmpDirection;
     }
+
 
     // Rotates animal and moves it
     public void move() throws GeneOutOfRangeException {
@@ -143,6 +162,7 @@ public class Animal {
 
     public void eatGrass(int energy){
         this.energy += energy;
+        this.grassEatenAmount++;
     }
 
     public Animal reproduce(Animal mate, int reproductionEnergyCost) {

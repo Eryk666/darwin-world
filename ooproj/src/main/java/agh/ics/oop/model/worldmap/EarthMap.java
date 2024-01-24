@@ -20,26 +20,12 @@ public class EarthMap extends AbstractWorldMap {
     @Override
     public void growGrass(int grassAmount){
         //1. Generate equator area
-        int divider = (mapBoundary.upperRight().y()-mapBoundary.bottomLeft().y())/5;
 
-        Boundary equator = new Boundary(new Vector2d(this.mapBoundary.bottomLeft().x(),
-                this.mapBoundary.bottomLeft().y()+divider*2+1)
-                ,new Vector2d(this.mapBoundary.upperRight().x(),
-                this.mapBoundary.bottomLeft().y()+divider*3));
+        Boundary equator = getEquator();
 
-        //2. Create Array of non grass spaces inside equator
-        int width = this.mapBoundary.upperRight().x()-this.mapBoundary.bottomLeft().x()+1;
-        int equatorHeight = equator.upperRight().y()-equator.bottomLeft().y()+1;
-        ArrayList<Vector2d> nonGrassEquatorPositions = new ArrayList<>();
-        for (int i = 0; i < width; i++){
-            for (int j = 0; j < equatorHeight; j++){
-                Vector2d currPosition = new Vector2d(this.mapBoundary.bottomLeft().x()+i,
-                        equator.bottomLeft().y()+j);
-                if(this.grasses.get(currPosition) == null ){
-                    nonGrassEquatorPositions.add(currPosition);
-                }
-            }
-        }
+        ArrayList<Vector2d> nonGrassEquatorPositions = generatePreferredGrassSpaces();
+
+
         //3. Shuffle it
         Collections.shuffle(nonGrassEquatorPositions);
         //4. add grass to first 80%*grassAmount or maximum possible grass spaces from the Array
@@ -52,8 +38,10 @@ public class EarthMap extends AbstractWorldMap {
         }
 
         //5. Create new Array of non grass spaces outside equator
+
         int lowerHeight = equator.bottomLeft().y()-this.mapBoundary.bottomLeft().y();
         int upperHeight = this.mapBoundary.upperRight().y()-equator.upperRight().y();
+        int width = this.mapBoundary.upperRight().x()-this.mapBoundary.bottomLeft().x()+1;
         ArrayList<Vector2d> nonGrassNonEquatorPositions = new ArrayList<>();
         for (int i = 0; i < width; i++){
             for (int j = 0; j < lowerHeight; j++) {
@@ -81,5 +69,34 @@ public class EarthMap extends AbstractWorldMap {
             this.grasses.put(currPosition,new Grass(currPosition));
             grassAdded++;
         }
+    }
+
+    private Boundary getEquator() {
+        int mapDivider = (mapBoundary.upperRight().y()-mapBoundary.bottomLeft().y())/5;
+
+        return new Boundary(new Vector2d(this.mapBoundary.bottomLeft().x(),
+                this.mapBoundary.bottomLeft().y()+mapDivider*2+1)
+                ,new Vector2d(this.mapBoundary.upperRight().x(),
+                this.mapBoundary.bottomLeft().y()+mapDivider*3));
+    }
+
+    @Override
+    public ArrayList<Vector2d> generatePreferredGrassSpaces() {
+        Boundary equator = getEquator();
+
+        //2. Create Array of non grass spaces inside equator
+        int width = this.mapBoundary.upperRight().x()-this.mapBoundary.bottomLeft().x()+1;
+        int equatorHeight = equator.upperRight().y()-equator.bottomLeft().y()+1;
+        ArrayList<Vector2d> nonGrassEquatorPositions = new ArrayList<>();
+        for (int i = 0; i < width; i++){
+            for (int j = 0; j < equatorHeight; j++){
+                Vector2d currPosition = new Vector2d(this.mapBoundary.bottomLeft().x()+i,
+                        equator.bottomLeft().y()+j);
+                if(this.grasses.get(currPosition) == null ){
+                    nonGrassEquatorPositions.add(currPosition);
+                }
+            }
+        }
+        return nonGrassEquatorPositions;
     }
 }

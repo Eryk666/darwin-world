@@ -8,18 +8,18 @@ import java.util.*;
 public abstract class AbstractWorldMap {
     protected final Boundary mapBoundary;
     protected final List<Animal> animals;
+    protected final List<Animal> deadAnimals;
     protected final Map<Vector2d, Grass> grasses;
     protected final ArrayList<MapChangeListener> observers;
     protected final int reproductionEnergyMinimum;
-    protected final ArrayList<Vector2d> mapUpdates;
     protected boolean paused;
     public AbstractWorldMap(Boundary mapBoundary, int reproductionEnergyMinimum) {
         this.mapBoundary = mapBoundary;
         this.animals = new ArrayList<>();
         this.grasses = new HashMap<>();
         this.observers = new ArrayList<>();
+        this.deadAnimals = new ArrayList<>();
         this.reproductionEnergyMinimum = reproductionEnergyMinimum;
-        this.mapUpdates = new ArrayList<>();
     }
 
     public int getReproductionEnergyMinimum(){
@@ -51,8 +51,14 @@ public abstract class AbstractWorldMap {
 
     public void growGrass(int grassAmount) {}
 
-    public void removeDeadAnimals() {
-        animals.removeIf(animal -> animal.getEnergy() <= 0);
+    public void removeDeadAnimals(int daysPassed) {
+        this.animals.forEach(animal -> {
+            if(animal.getEnergy() <= 0){
+                deadAnimals.add(animal);
+                animal.setDayOfDeath(daysPassed);
+            }
+        });
+        this.animals.removeIf(animal -> animal.getEnergy() <= 0);
     }
 
     public void movementPhase() {
@@ -90,7 +96,6 @@ public abstract class AbstractWorldMap {
                 animal.eatGrass(energyPerGrass);
                 // Removing the grass
                 this.grasses.remove(position);
-                this.mapUpdates.add(position);
             }
         });
     }
@@ -162,9 +167,75 @@ public abstract class AbstractWorldMap {
         }
     }
 
-    public void clearMapUpdate(){
-        this.mapUpdates.clear();
+    public int countEmptySpaces(){
+        int returnValue = 0;
+        for (int i = this.mapBoundary.bottomLeft().x(); i < this.mapBoundary.upperRight().x() ; i++) {
+            for (int j = this.mapBoundary.bottomLeft().y(); j < this.mapBoundary.upperRight().y() ; j++) {
+                Vector2d position = new Vector2d(i,j);
+                boolean isEmpty = true;
+                for (Animal animal : animals) {
+                    if(animal.getPosition().equals(position)){
+                        isEmpty = false;
+                        break;
+                    }
+                }
+                if(grasses.containsKey(position)){
+                    isEmpty = false;
+                }
+                if(isEmpty){
+                    returnValue++;
+                }
+            }
+        }
+        return returnValue;
     }
 
+    public List<Integer> commonGenes(){
+        Map<List<Integer>, Integer> geneCounts = new HashMap<>();
+
+        for (Animal animal : animals) {
+            List<Integer> genes = animal.getGenes();
+
+            geneCounts.put(genes, geneCounts.getOrDefault(genes, 0) + 1);
+        }
+
+        // Step 4: Find the gene list with the maximum occurrence
+        List<Integer> mostOccurringGenes = null;
+        int maxOccurrences = 0;
+
+        for (Map.Entry<List<Integer>, Integer> entry : geneCounts.entrySet()) {
+            if (entry.getValue() > maxOccurrences) {
+                maxOccurrences = entry.getValue();
+                mostOccurringGenes = entry.getKey();
+            }
+        }
+        return mostOccurringGenes;
+    }
+
+    public double averageEnergy(){
+        double animalEnergy = 0;
+        for (Animal animal : this.animals) {
+            animalEnergy += animal.getEnergy();
+        }
+        return animalEnergy/this.animals.size();
+    }
+
+    public double averageDeadAge(){
+        double animalAge = 0;
+        for (Animal deadAnimal : deadAnimals) {
+            animalAge += deadAnimal.getAge();
+        }
+        return  animalAge/deadAnimals.size();
+    }
+
+    public double averageAlivePredecessors(){
+        double animalChildren = 0;
+        for (Animal animal : this.animals) {
+            animalChildren += animal.getDescendantsAmount(new ArrayList<>());
+        }
+        return animalChildren/this.animals.size();
+    }
+
+    public abstract ArrayList<Vector2d> generatePreferredGrassSpaces();
 
 }

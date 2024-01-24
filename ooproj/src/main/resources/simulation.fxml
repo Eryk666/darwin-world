@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.front.presenter.SimulationPresenter">
     <SplitPane dividerPositions="0.5" prefHeight="400.0" prefWidth="600.0">
@@ -9,8 +10,24 @@
             <GridPane fx:id="mapGrid" gridLinesVisible="true" />
         </VBox>
         <AnchorPane fx:id="statsPane" prefHeight="398.0" prefWidth="276.0">
-            <Button onAction="#stopSim" layoutX="72.0" layoutY="14.0" mnemonicParsing="false" text="STOP"/>
-            <Button onAction="#startSim" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="START"/>
+            <Button layoutX="72.0" layoutY="14.0" mnemonicParsing="false" onAction="#stopSim" text="STOP" />
+            <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#startSim" text="START" />
+            <Button layoutX="123.0" layoutY="14.0" mnemonicParsing="false" onAction="#toggleMapStats" text="DisplayMapStats" />
+         <Label fx:id="animalsAmount" layoutX="14.0" layoutY="49.0" prefHeight="17.0" prefWidth="270.0" text="Animals amount" />
+         <Label fx:id="plantsAmount" layoutX="14.0" layoutY="66.0" prefHeight="17.0" prefWidth="270.0" text="Plants amount" />
+         <Label fx:id="emptySpaces" layoutX="14.0" layoutY="83.0" prefHeight="17.0" prefWidth="270.0" text="Empty spaces" />
+         <Label fx:id="mostPopularGenome" layoutX="14.0" layoutY="100.0" prefHeight="17.0" prefWidth="270.0" text="Most popular genome" />
+         <Label fx:id="averageEnergy" layoutX="14.0" layoutY="117.0" prefHeight="17.0" prefWidth="270.0" text="Average energy" />
+         <Label fx:id="deadAnimalsLifespan" layoutX="14.0" layoutY="134.0" prefHeight="17.0" prefWidth="270.0" text="Average dead animals lifespan" />
+         <Label fx:id="animalsPredecessors" layoutX="13.0" layoutY="151.0" prefHeight="17.0" prefWidth="270.0" text="Average alive animals predecessors" />
+         <Line endX="183.0" endY="-17.0" layoutX="114.0" layoutY="197.0" startX="-114.0" startY="-17.0" />
+         <Label fx:id="animalGenome" layoutX="14.0" layoutY="191.0" text="Animal genome: " />
+         <Label fx:id="animalCurrentGenome" layoutX="13.0" layoutY="208.0" text="Current genome: " />
+         <Label fx:id="animalEnergy" layoutX="14.0" layoutY="225.0" text="Animal energy: " />
+         <Label fx:id="plantsEaten"  layoutX="14.0" layoutY="242.0" text="Plants eaten amount: " />
+         <Label fx:id="predecessors" layoutX="14.0" layoutY="259.0" text="Animal predecessors: " />
+         <Label fx:id="animalLifespan" layoutX="13.0" layoutY="276.0" text="Animal lifespan: " />
+         <Label fx:id="dayOfDeath" layoutX="14.0" layoutY="293.0" text="DayOfDeath: " />
         </AnchorPane>
 
     </SplitPane>

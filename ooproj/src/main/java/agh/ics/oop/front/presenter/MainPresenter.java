@@ -72,7 +72,7 @@ public class MainPresenter implements Initializable {
     @FXML
     private void simulationStartButton() throws IOException, InterruptedException, WrongInputException {
         //parse inputs
-        Boundary mapBounds = new Boundary(new Vector2d(0,0),
+        Boundary mapBounds = new Boundary(new Vector2d(1,1),
                 new Vector2d(InputParser.parse(this.mapWidth.getText()),InputParser.parse(this.mapHeight.getText())));
         int initialGrassNumber = InputParser.parse(this.startGrassAmount.getText());
         int energyPerGrass = InputParser.parse(this.energyPerGrass.getText());

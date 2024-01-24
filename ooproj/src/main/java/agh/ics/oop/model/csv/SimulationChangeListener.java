@@ -52,7 +52,7 @@ public class SimulationChangeListener implements CSVEventListener {
                 Integer.toString(animal.getEnergy()),
                 Integer.toString(animal.getAge()),
                 Integer.toString(animal.getChildrenAmount()),
-                Integer.toString(animal.getDescendantsAmount())
+                Integer.toString(animal.getDescendantsAmount(new ArrayList<>()))
             });
         }
 
