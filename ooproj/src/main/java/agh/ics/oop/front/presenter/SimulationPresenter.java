@@ -27,14 +27,46 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
     private static final int CELL_WIDTH = 50;
     private static final int CELL_HEIGHT = 50;
     @FXML
+    public Label animalGenome;
+    @FXML
+    public Label animalCurrentGenome;
+    @FXML
+    public Label animalEnergy;
+    @FXML
+    public Label plantsEaten;
+    @FXML
+    public Label predecessors;
+    @FXML
+    public Label animalLifespan;
+    @FXML
+    public Label dayOfDeath;
+    private boolean statsBoolean = false;
+    @FXML
     public AnchorPane statsPane;
+    @FXML
+    public Label animalsAmount;
+    @FXML
+    public Label plantsAmount;
+    @FXML
+    public Label emptySpaces;
+    @FXML
+    public Label mostPopularGenome;
+    @FXML
+    public Label averageEnergy;
+    @FXML
+    public Label animalsPredecessors;
+    @FXML
+    public Label deadAnimalsLifespan;
     private AbstractWorldMap worldMap;
     @FXML
     public GridPane mapGrid;
 
+    private Animal displayStatsAnimal;
+
+
     public void setWorldMap(AbstractWorldMap map){
         this.worldMap = map;
-        this.worldMap.setPaused(true);
+        this.worldMap.setPaused(false);
     }
 
     @Override
@@ -42,19 +74,79 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
         Platform.runLater(() -> {
             try {
                 drawMap();
-                updateStats();
+                if (statsBoolean){
+                    updateStats();
+                }else {
+                    clearStats();
+                }
+                if(this.displayStatsAnimal != null){
+                    updateAnimalStats();
+                }else {
+                    clearAnimalStats();
+                }
             } catch (InterruptedException ex){
                 ex.printStackTrace();
             }
-            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), event -> {}));
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(3000), event -> {}));
             timeline.play();
         });
     }
-
-    private void updateStats() {
-        System.out.println("STATS:");
-        System.out.println("");
+    //animal stats
+    private void updateAnimalStats() {
+        this.animalGenome.setText("Animal genome: " + displayStatsAnimal.getGenes());
+        this.animalCurrentGenome.setText("Current genome: " + displayStatsAnimal.getCurrentGene());
+        this.animalEnergy.setText("Animal energy: " + displayStatsAnimal.getEnergy());
+        this.plantsEaten.setText("Plants eaten amount: " + displayStatsAnimal.getGrassEatenAmount());
+        this.predecessors.setText("Animal predecessors: " + displayStatsAnimal.getDescendantsAmount(new ArrayList<>()));
+        this.animalLifespan.setText("Animal Lifespan: " + displayStatsAnimal.getAge());
+        this.dayOfDeath.setText("Day of death: " + displayStatsAnimal.getDayOfDeath());
     }
+
+    private void clearAnimalStats(){
+        this.animalGenome.setText("");
+        this.animalCurrentGenome.setText("");
+        this.animalEnergy.setText("");
+        this.plantsEaten.setText("");
+        this.predecessors.setText("");
+        this.animalLifespan.setText("");
+        this.dayOfDeath.setText("");
+    }
+
+    //main stats
+    private void updateStats() {
+        //System.out.println("STATS:");
+        this.animalsAmount.setText("Animals amount: " + this.worldMap.getAnimals().size());
+        this.plantsAmount.setText("Plants amount: " + this.worldMap.getGrasses().size());
+        this.emptySpaces.setText("Empty spaces: " + this.worldMap.countEmptySpaces());
+        this.mostPopularGenome.setText("Most popular genome: " + this.worldMap.commonGenes());
+        this.averageEnergy.setText("Average energy: " + round(this.worldMap.averageEnergy(),2));
+        this.deadAnimalsLifespan.setText("Average dead animal lifespan: " + round(this.worldMap.averageDeadAge(),2));
+        this.animalsPredecessors.setText("Average alive animal predecessors amount: " + round(this.worldMap.averageAlivePredecessors(),2));
+    }
+
+    private void clearStats(){
+        this.animalsAmount.setText("");
+        this.plantsAmount.setText("");
+        this.emptySpaces.setText("");
+        this.mostPopularGenome.setText("");
+        this.averageEnergy.setText("");
+        this.deadAnimalsLifespan.setText("");
+        this.animalsPredecessors.setText("");
+    }
+
+
+    //cleaner display
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
+
+
+
 
     private void drawMap() throws InterruptedException {
         clearGrid();
@@ -67,6 +159,8 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
 
         Map<Vector2d, Animal> strongestAnimals = this.worldMap.getStrongestAnimals();
         Map<Vector2d, Grass> grassMap = this.worldMap.getGrasses();
+        ArrayList<Vector2d> preferredGrassSpaces = this.worldMap.generatePreferredGrassSpaces();
+        List<Integer> bestGenome = this.worldMap.commonGenes();
 
         System.out.println("Grass size:" + grassMap.size());
 
@@ -76,6 +170,11 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
                 Canvas canvas;
                 canvas = createCanvas("/empty.png", currPos.x(), currPos.y());
                 mapGrid.add(canvas, i+1, rows-j);
+                //preferred grass
+                if(preferredGrassSpaces.contains(currPos)){
+                    canvas = createCanvas("/preferedSpace.png",currPos.x(),currPos.y());
+                    mapGrid.add(canvas, i+1, rows-j);
+                }
                 //animal is the most important so it goes first
                 if (strongestAnimals.get(currPos) != null) {
                     Animal rat = strongestAnimals.get(currPos);
@@ -95,16 +194,15 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
                         case 2 -> '3';
                         default -> '4';
                     };
-
-                    //Label animal = new Label(rat.toString() + rat.getEnergy());
                     canvas = createCanvas("/rats/rat"+rotation+".png", currPos.x(), currPos.y());
                     mapGrid.add(canvas, i+1, rows-j);
                     canvas = createCanvas("/hp/hp"+health+".png",currPos.x(), currPos.y());
                     mapGrid.add(canvas, i+1, rows-j);
-                    //mapGrid.add(animal, i+1, rows-j);
+                    if(rat.getGenes().equals(bestGenome)){
+                        canvas = createCanvas("/crown.png", currPos.x(), currPos.y());
+                        mapGrid.add(canvas, i+1, rows-j);
+                    }
                 } else if (grassMap.get(currPos) != null) {
-                    //Label grass = new Label("*");
-                    //mapGrid.add(grass, i+1, rows-j);
                     canvas = createCanvas("/weed.png", currPos.x(), currPos.y());
                     mapGrid.add(canvas, i+1, rows-j);
 
@@ -159,15 +257,24 @@ public class SimulationPresenter implements MapChangeListener, Initializable {
 
     }
 
+    //buttons
     void displayStats(int x, int y){
         System.out.println("Pressed button on pos: " +x+ ", "+y);
+        //get animal on the pos
+        Map<Vector2d, Animal> strongestAnimals = this.worldMap.getStrongestAnimals();
+        this.displayStatsAnimal = strongestAnimals.getOrDefault(new Vector2d(x, y), null);
     }
-
+    @FXML
+    private void toggleMapStats(){
+        statsBoolean = !statsBoolean;
+    }
+    @FXML
     public void stopSim(){
         worldMap.setPaused(true);
     }
+
+    @FXML
     public void startSim(){
         worldMap.setPaused(false);
     }
-
 }
