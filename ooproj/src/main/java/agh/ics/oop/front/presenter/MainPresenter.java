@@ -52,7 +52,7 @@ public class MainPresenter implements Initializable {
     @FXML
     public TextField initialAnimalEnergy;
     @FXML
-    public TextField energyForHorny;
+    public TextField reproductionEnergyMinimum;
     @FXML
     public TextField reproductionEnergyCost;
     @FXML
@@ -119,7 +119,7 @@ public class MainPresenter implements Initializable {
         return new Simulation(
             generateWorldMap(),
             generateInitialAnimals(),
-            InputParser.parse(this.energyForHorny.getText()),
+            InputParser.parse(this.reproductionEnergyMinimum.getText()),
             InputParser.parse(this.reproductionEnergyCost.getText()),
             InputParser.parse(this.startGrassAmount.getText()),
             InputParser.parse(this.dailyGrassGrowth.getText()),
@@ -139,10 +139,10 @@ public class MainPresenter implements Initializable {
 
         switch (grassVariant) {
             case "ForestedEquators" -> {
-                return new EarthMap(mapBoundary, InputParser.parse(energyForHorny.getText()));
+                return new EarthMap(mapBoundary, InputParser.parse(reproductionEnergyMinimum.getText()));
             }
             case "CreepingJungle" -> {
-                return new FunkyMap(mapBoundary, InputParser.parse(energyForHorny.getText()));
+                return new FunkyMap(mapBoundary, InputParser.parse(reproductionEnergyMinimum.getText()));
             }
             default -> throw new RuntimeException("Map variant " + grassVariant + " does not exist!");
         }
@@ -246,7 +246,7 @@ public class MainPresenter implements Initializable {
         this.initialAnimalAmount.setText(chosenConfig[8]);
         this.initialAnimalEnergy.setText(chosenConfig[9]);
         this.reproductionEnergyCost.setText(chosenConfig[10]);
-        this.energyForHorny.setText(chosenConfig[11]);
+        this.reproductionEnergyMinimum.setText(chosenConfig[11]);
         this.minMutationAmount.setText(chosenConfig[12]);
         this.maxMutationAmount.setText(chosenConfig[13]);
         this.mutationVariant.setValue(chosenConfig[14]);
@@ -269,7 +269,7 @@ public class MainPresenter implements Initializable {
             initialAnimalAmount.getText(),
             initialAnimalEnergy.getText(),
             reproductionEnergyCost.getText(),
-            energyForHorny.getText(),
+            reproductionEnergyMinimum.getText(),
             minMutationAmount.getText(),
             maxMutationAmount.getText(),
             mutationVariant.getValue(),

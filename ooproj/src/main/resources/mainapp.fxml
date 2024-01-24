@@ -47,7 +47,7 @@
         </HBox>
         <HBox>
             <Label prefHeight="17.0" prefWidth="180.0" text="reproduction energy cost" />
-            <TextField fx:id="energyForHorny" prefHeight="25.0" prefWidth="180.0" text="69" />
+            <TextField fx:id="reproductionEnergyMinimum" prefHeight="25.0" prefWidth="180.0" text="69" />
         </HBox>
         <HBox>
             <Label prefHeight="17.0" prefWidth="180.0" text="reproduction energy minimum" />
