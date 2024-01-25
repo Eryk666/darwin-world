@@ -11,7 +11,6 @@ import java.util.Map;
 public class Statistics {
     private final AbstractWorldMap worldMap;
 
-
     public Statistics(AbstractWorldMap worldMap) {
         this.worldMap = worldMap;
     }
@@ -117,5 +116,29 @@ public class Statistics {
 
     public String animalDayOfDeath(Animal animal){
         return "Day of death: " + animal.getDayOfDeath();
+    }
+
+    public String[] collectData() {
+        return new String[] {
+            Integer.toString(worldMap.getAnimals().size()),
+            Integer.toString(worldMap.getGrasses().size()),
+            countEmptySpaces(),
+            bestGenome(),
+            averageEnergy(),
+            averageDeadAge(),
+            averageAlivePredecessors()
+        };
+    }
+
+    public String[] getColumnNames() {
+        return new String[] {
+            "Animals",
+            "Grass",
+            "Empty spaces",
+            "Most popular genome",
+            "Average energy",
+            "Average dead animal lifespan",
+            "Average alive animal predecessors"
+        };
     }
 }
