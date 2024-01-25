@@ -8,7 +8,6 @@ import agh.ics.oop.model.Vector2d;
 import java.util.*;
 
 public class Animal {
-    private final UUID animalID = UUID.randomUUID();
     protected Vector2d position;
     protected MapDirection direction;
     protected int energy;
@@ -45,9 +44,6 @@ public class Animal {
 
     public int getDayOfDeath(){
         return this.dayOfDeath;
-    }
-    public UUID getAnimalID() {
-        return animalID;
     }
 
     public Vector2d getPosition() {
