@@ -66,6 +66,7 @@ public abstract class AbstractWorldMap {
     public void movementPhase() {
         this.animals.forEach(animal -> {
             try {
+                Vector2d animalPosition = animal.getPosition();
                 animal.move();
 
                 // Fix caused by EarthMap variant
@@ -80,6 +81,7 @@ public abstract class AbstractWorldMap {
                     animal.getPosition().y() < mapBoundary.bottomLeft().y()
                 ) {
                     animal.rotateAnimal(4);
+                    animal.setPosition(animalPosition);
                 }
             } catch (GeneOutOfRangeException e) {
                 System.out.println(e.getMessage());

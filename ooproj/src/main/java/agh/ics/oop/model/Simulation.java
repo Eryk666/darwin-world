@@ -47,6 +47,12 @@ public class Simulation implements Runnable {
         // Simulation ends when all animals are dead
         while (!worldMap.getAnimals().isEmpty()) {
             if (worldMap.getPaused()){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
                 continue;
             }
             simulateDay();

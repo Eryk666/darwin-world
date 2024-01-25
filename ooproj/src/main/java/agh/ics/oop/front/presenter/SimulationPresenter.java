@@ -77,16 +77,9 @@ public class SimulationPresenter implements SimulationChangeListener, Initializa
             this.statistics = new Statistics(worldMap);
             try {
                 drawMap();
-                if (statsBoolean) {
-                    updateStats();
-                } else {
-                    clearStats();
-                }
-                if (this.displayStatsAnimal != null) {
-                    updateAnimalStats();
-                } else {
-                    clearAnimalStats();
-                }
+                updateStats();
+                updateAnimalStats();
+
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }
@@ -97,45 +90,46 @@ public class SimulationPresenter implements SimulationChangeListener, Initializa
 
     // Animal stats
     private void updateAnimalStats() {
-        this.animalGenome.setText(this.statistics.animalGenome(this.displayStatsAnimal));
-        this.animalCurrentGenome.setText(this.statistics.animalCurrentGenome(this.displayStatsAnimal));
-        this.animalEnergy.setText(this.statistics.animalEnergy(this.displayStatsAnimal));
-        this.plantsEaten.setText(this.statistics.animalPlantsEaten(this.displayStatsAnimal));
-        this.predecessors.setText(this.statistics.animalPredecessors(this.displayStatsAnimal));
-        this.animalLifespan.setText(this.statistics.animalLifespan(this.displayStatsAnimal));
-        this.dayOfDeath.setText(this.statistics.animalDayOfDeath(this.displayStatsAnimal));
-    }
+        if (this.displayStatsAnimal != null) {
+            this.animalGenome.setText(this.statistics.animalGenome(this.displayStatsAnimal));
+            this.animalCurrentGenome.setText(this.statistics.animalCurrentGenome(this.displayStatsAnimal));
+            this.animalEnergy.setText(this.statistics.animalEnergy(this.displayStatsAnimal));
+            this.plantsEaten.setText(this.statistics.animalPlantsEaten(this.displayStatsAnimal));
+            this.predecessors.setText(this.statistics.animalPredecessors(this.displayStatsAnimal));
+            this.animalLifespan.setText(this.statistics.animalLifespan(this.displayStatsAnimal));
+            this.dayOfDeath.setText(this.statistics.animalDayOfDeath(this.displayStatsAnimal));
+        } else {
+            this.animalGenome.setText("");
+            this.animalCurrentGenome.setText("");
+            this.animalEnergy.setText("");
+            this.plantsEaten.setText("");
+            this.predecessors.setText("");
+            this.animalLifespan.setText("");
+            this.dayOfDeath.setText("");
+        }
 
-    private void clearAnimalStats(){
-        this.animalGenome.setText("");
-        this.animalCurrentGenome.setText("");
-        this.animalEnergy.setText("");
-        this.plantsEaten.setText("");
-        this.predecessors.setText("");
-        this.animalLifespan.setText("");
-        this.dayOfDeath.setText("");
     }
 
     // Main stats
     private void updateStats() {
-        // System.out.println("STATS:");
-        this.animalsAmount.setText("Animals amount: " + this.worldMap.getAnimals().size());
-        this.plantsAmount.setText("Plants amount: " + this.worldMap.getGrasses().size());
-        this.emptySpaces.setText("Empty spaces: " + this.statistics.countEmptySpaces());
-        this.mostPopularGenome.setText("Most popular genome: " + this.statistics.bestGenome());
-        this.averageEnergy.setText("Average energy: " + this.statistics.averageEnergy());
-        this.deadAnimalsLifespan.setText("Average dead animal lifespan: " + this.statistics.averageDeadAge());
-        this.animalsPredecessors.setText("Average alive animal predecessors amount: " + this.statistics.averageAlivePredecessors());
-    }
+        if (statsBoolean) {
+            this.animalsAmount.setText("Animals amount: " + this.worldMap.getAnimals().size());
+            this.plantsAmount.setText("Plants amount: " + this.worldMap.getGrasses().size());
+            this.emptySpaces.setText("Empty spaces: " + this.statistics.countEmptySpaces());
+            this.mostPopularGenome.setText("Most popular genome: " + this.statistics.bestGenome());
+            this.averageEnergy.setText("Average energy: " + this.statistics.averageEnergy());
+            this.deadAnimalsLifespan.setText("Average dead animal lifespan: " + this.statistics.averageDeadAge());
+            this.animalsPredecessors.setText("Average alive animal predecessors amount: " + this.statistics.averageAlivePredecessors());
+        } else {
+            this.animalsAmount.setText("");
+            this.plantsAmount.setText("");
+            this.emptySpaces.setText("");
+            this.mostPopularGenome.setText("");
+            this.averageEnergy.setText("");
+            this.deadAnimalsLifespan.setText("");
+            this.animalsPredecessors.setText("");
+        }
 
-    private void clearStats(){
-        this.animalsAmount.setText("");
-        this.plantsAmount.setText("");
-        this.emptySpaces.setText("");
-        this.mostPopularGenome.setText("");
-        this.averageEnergy.setText("");
-        this.deadAnimalsLifespan.setText("");
-        this.animalsPredecessors.setText("");
     }
 
     private void drawMap() throws InterruptedException {
@@ -253,10 +247,12 @@ public class SimulationPresenter implements SimulationChangeListener, Initializa
         //get animal on the pos
         Map<Vector2d, Animal> strongestAnimals = this.worldMap.getStrongestAnimals();
         this.displayStatsAnimal = strongestAnimals.getOrDefault(new Vector2d(x, y), null);
+        Platform.runLater(this::updateAnimalStats);
     }
     @FXML
     private void toggleMapStats(){
         statsBoolean = !statsBoolean;
+        Platform.runLater(this::updateStats);
     }
     @FXML
     public void stopSim(){
