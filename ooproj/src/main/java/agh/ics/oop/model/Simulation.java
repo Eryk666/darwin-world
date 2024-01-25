@@ -97,7 +97,7 @@ public class Simulation implements Runnable {
 
     public void notifyListeners() {
         for (SimulationChangeListener listener : listeners) {
-            listener.update(this.simulationID, this.worldMap);
+            listener.update(this);
         }
     }
 }

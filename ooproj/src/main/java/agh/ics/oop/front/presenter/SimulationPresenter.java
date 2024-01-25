@@ -72,7 +72,9 @@ public class SimulationPresenter implements SimulationChangeListener, Initializa
     }
 
     @Override
-    public void update(UUID simulationID, AbstractWorldMap worldMap) {
+    public void update(Simulation simulation) {
+        AbstractWorldMap worldMap = simulation.getWorldMap();
+
         Platform.runLater(() -> {
             this.statistics = new Statistics(worldMap);
             try {
@@ -182,7 +184,7 @@ public class SimulationPresenter implements SimulationChangeListener, Initializa
                     mapGrid.add(canvas, i+1, rows-j);
                     canvas = createCanvas("/hp/hp"+health+".png",currPos.x(), currPos.y());
                     mapGrid.add(canvas, i+1, rows-j);
-                    if(rat.getGenes().equals(bestGenome)){
+                    if(rat.getGenes().equals(bestGenome)) {
                         canvas = createCanvas("/crown.png", currPos.x(), currPos.y());
                         mapGrid.add(canvas, i+1, rows-j);
                     }
@@ -242,13 +244,14 @@ public class SimulationPresenter implements SimulationChangeListener, Initializa
     }
 
     //buttons
-    void displayStats(int x, int y){
+    void displayStats(int x, int y) {
         System.out.println("Pressed button on pos: " +x+ ", "+y);
         //get animal on the pos
         Map<Vector2d, Animal> strongestAnimals = this.worldMap.getStrongestAnimals();
         this.displayStatsAnimal = strongestAnimals.getOrDefault(new Vector2d(x, y), null);
         Platform.runLater(this::updateAnimalStats);
     }
+
     @FXML
     private void toggleMapStats(){
         statsBoolean = !statsBoolean;
