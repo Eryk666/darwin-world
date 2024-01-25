@@ -5,5 +5,5 @@ import agh.ics.oop.model.worldmap.AbstractWorldMap;
 import java.util.UUID;
 
 public interface SimulationChangeListener {
-    void update(Simulation simulation);
+    void update(UUID simulationID, AbstractWorldMap worldMap);
 }

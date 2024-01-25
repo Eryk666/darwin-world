@@ -11,14 +11,14 @@ import java.util.*;
 
 public class SimulationDataRecorder implements SimulationChangeListener {
     @Override
-    public void update(Simulation simulation) {
+    public void update(UUID simulationID, AbstractWorldMap worldMap) {
         try {
             Files.createDirectories(Paths.get("logs/"));
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
-        String filePath = "logs/simulation_" + simulation.getSimulationID().toString() + ".csv";
-        Statistics dataCollector = new Statistics(simulation.getWorldMap());
+        String filePath = "logs/simulation_" + simulationID.toString() + ".csv";
+        Statistics dataCollector = new Statistics(worldMap);
 
         // If file did not exist we must append column names at the start
         if (!Files.exists(Path.of(filePath))) {
