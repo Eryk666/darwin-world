@@ -112,6 +112,7 @@ public class MainPresenter implements Initializable {
         stage.show();
 
         Thread thread = new Thread(simulation);
+        thread.setDaemon(true);
         thread.start();
     }
 
