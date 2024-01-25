@@ -63,8 +63,8 @@ public class Simulation implements Runnable {
         worldMap.growGrass(grassGrownPerDay);
 
         try {
-            Thread.sleep(5000);
-        }catch (InterruptedException e){
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -91,7 +91,7 @@ public class Simulation implements Runnable {
 
     public void notifyListeners() {
         for (SimulationChangeListener listener : listeners) {
-            listener.update(this.worldMap);
+            listener.update(this.simulationID, this.worldMap);
         }
     }
 }

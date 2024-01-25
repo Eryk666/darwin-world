@@ -52,7 +52,7 @@ public class EarthMapTest {
         Animal animal = new Animal(new Vector2d(7,10),69,genes,2,8);
         Animal animal1 = new Animal(new Vector2d(7,10),699,genes,2,8);
         EarthMap map = new EarthMap(
-                new Boundary(new Vector2d(6,9),new Vector2d(21,37)),0);
+                new Boundary(new Vector2d(6,9),new Vector2d(21,37)), 0);
         map.placeAnimal(animal);
         map.placeAnimal(animal1);
         map.reproductionPhase(10);

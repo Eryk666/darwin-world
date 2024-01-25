@@ -1,13 +1,30 @@
 package agh.ics.oop.model.csv;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CSVManager {
-    // TODO possibly add readFromFile method
+    public static List<String[]> readFromFile(String fileName) throws FileNotFoundException {
+        List<String[]> data = new ArrayList<>();
+
+        try (
+            FileReader fileReader = new FileReader(fileName);
+            BufferedReader bufferedReader = new BufferedReader(fileReader)
+        ) {
+            String line = bufferedReader.readLine();
+
+            while (line != null) {
+                data.add(line.split(";"));
+                line = bufferedReader.readLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        return data;
+    }
 
     public static void writeToFile(String fileName, List<String[]> data) {
         try (
@@ -19,7 +36,7 @@ public class CSVManager {
                 printWriter.println(parseToCSV(entry));
             }
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 

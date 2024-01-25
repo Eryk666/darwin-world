@@ -10,8 +10,9 @@ public abstract class AbstractWorldMap {
     protected final List<Animal> animals;
     protected final List<Animal> deadAnimals;
     protected final Map<Vector2d, Grass> grasses;
-    protected final int reproductionEnergyMinimum;
     protected boolean paused;
+    protected int reproductionEnergyMinimum;
+
     public AbstractWorldMap(Boundary mapBoundary, int reproductionEnergyMinimum) {
         this.mapBoundary = mapBoundary;
         this.animals = new ArrayList<>();
