@@ -81,8 +81,5 @@ fabric.properties
 
 build/
 .idea/
-gradle/
 .gradle/
-gradlew
-gradlew.bat
 logs/
