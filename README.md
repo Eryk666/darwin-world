@@ -5,9 +5,8 @@ course at AGH University of Kraków.
 
 ## Running the app
 
-To run Darwin World, you'll need Java 17 or higher.
+To run Darwin World, make sure you have Java 17 or newer installed. Then simply use the following command:
 
-1. **Run the app using the Gradle**:
 ```bash
    ./gradlew run
 ```
