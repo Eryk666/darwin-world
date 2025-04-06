@@ -3,10 +3,7 @@ package agh.ics.oop.model;
 import agh.ics.oop.model.animal.Animal;
 import agh.ics.oop.model.worldmap.AbstractWorldMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Statistics {
     private final AbstractWorldMap worldMap;
@@ -44,7 +41,8 @@ public class Statistics {
         for (Animal animal : this.worldMap.getAnimals()) {
             List<Integer> genes = animal.getGenes();
 
-            geneCounts.put(genes, geneCounts.getOrDefault(genes, 0) + 1);
+            List<Integer> immutableGenes = List.copyOf(genes);
+            geneCounts.put(immutableGenes, geneCounts.getOrDefault(immutableGenes, 0) + 1);
         }
 
         // Step 4: Find the gene list with the maximum occurrence

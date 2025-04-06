@@ -1,4 +1,4 @@
-package agh.ics.oop.front;
+package agh.ics.oop.exception;
 
 public class WrongInputException extends Exception {
     public WrongInputException(String inputMsg){

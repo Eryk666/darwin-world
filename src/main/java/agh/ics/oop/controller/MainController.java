@@ -1,8 +1,8 @@
-package agh.ics.oop.front.presenter;
+package agh.ics.oop.controller;
 
 
-import agh.ics.oop.front.InputParser;
-import agh.ics.oop.front.WrongInputException;
+import agh.ics.oop.util.InputParser;
+import agh.ics.oop.exception.WrongInputException;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.animal.Animal;
 import agh.ics.oop.model.animal.FunkyAnimal;
@@ -28,7 +28,7 @@ import java.net.URL;
 import java.util.*;
 
 
-public class MainPresenter implements Initializable {
+public class MainController implements Initializable {
     @FXML
     public ChoiceBox<String> chosenConfig;
     @FXML
@@ -103,7 +103,7 @@ public class MainPresenter implements Initializable {
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        SimulationPresenter presenter = loader.getController();
+        SimulationController presenter = loader.getController();
 
         simulation.subscribe(presenter);
 
@@ -114,6 +114,8 @@ public class MainPresenter implements Initializable {
         Thread thread = new Thread(simulation);
         thread.setDaemon(true);
         thread.start();
+
+        stage.setOnCloseRequest(event -> thread.interrupt());
     }
 
     private Simulation generateSimulation() throws WrongInputException {

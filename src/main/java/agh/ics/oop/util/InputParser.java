@@ -1,4 +1,6 @@
-package agh.ics.oop.front;
+package agh.ics.oop.util;
+
+import agh.ics.oop.exception.WrongInputException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

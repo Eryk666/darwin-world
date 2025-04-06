@@ -19,7 +19,7 @@ public class EarthMap extends AbstractWorldMap {
 
         Boundary equator = getEquator();
 
-        ArrayList<Vector2d> positions = generatePreferredGrassSpaces();
+        Set<Vector2d> positions = generatePreferredGrassSpaces();
 
 
         //3. Shuffle it
@@ -63,13 +63,13 @@ public class EarthMap extends AbstractWorldMap {
     }
 
     @Override
-    public ArrayList<Vector2d> generatePreferredGrassSpaces() {
+    public Set<Vector2d> generatePreferredGrassSpaces() {
         Boundary equator = getEquator();
 
         //2. Create Array of non grass spaces inside equator
         int width = this.mapBoundary.upperRight().x()-this.mapBoundary.bottomLeft().x()+1;
         int equatorHeight = equator.upperRight().y()-equator.bottomLeft().y()+1;
-        ArrayList<Vector2d> nonGrassEquatorPositions = new ArrayList<>();
+        Set<Vector2d> nonGrassEquatorPositions = new HashSet<>();
         for (int i = 0; i < width; i++){
             for (int j = 0; j < equatorHeight; j++){
                 Vector2d currPosition = new Vector2d(this.mapBoundary.bottomLeft().x()+i,
