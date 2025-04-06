@@ -48,7 +48,7 @@ public class Simulation implements Runnable {
         while (!worldMap.getAnimals().isEmpty()) {
             if (worldMap.getPaused()){
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -69,7 +69,7 @@ public class Simulation implements Runnable {
         worldMap.growGrass(grassGrownPerDay);
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
         }

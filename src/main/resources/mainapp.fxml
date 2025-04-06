@@ -4,7 +4,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane dividerPositions="0.5" minHeight="550.0" minWidth="850.0" prefHeight="787.0" prefWidth="1078.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.front.presenter.MainPresenter">
+<SplitPane dividerPositions="0.5" minHeight="550.0" minWidth="850.0" prefHeight="787.0" prefWidth="1078.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.controller.MainController">
     <ImageView fitHeight="786.0" fitWidth="958.0" pickOnBounds="true" preserveRatio="true">
         <Image url="@ratBackground.jpg" />
     </ImageView>

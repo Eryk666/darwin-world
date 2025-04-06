@@ -159,18 +159,34 @@ public abstract class AbstractWorldMap {
     }
 
 
-    public abstract ArrayList<Vector2d> generatePreferredGrassSpaces();
+    public abstract Set<Vector2d> generatePreferredGrassSpaces();
 
-    protected void growGrassOn(ArrayList<Vector2d> positions, double amount){
-        Collections.shuffle(positions);
-        //3. add grass to first 80%*grassAmount or maximum possible grass spaces
-        Iterator<Vector2d> positionsIterator = positions.iterator();
+    protected void growGrassOn(Set<Vector2d> positions, double amount){
+        // Convert the Set to a List to shuffle the elements (Set itself doesn't support shuffling)
+        List<Vector2d> positionList = new ArrayList<>(positions);
+        Collections.shuffle(positionList);
+
+        // Add grass to the first 80% or the maximum possible grass spaces
         int addedGrass = 0;
-        while (positionsIterator.hasNext() && addedGrass < amount){
-            Vector2d currPos = positionsIterator.next();
-            this.grasses.put(currPos,new Grass(currPos));
+        for (Vector2d currPos : positionList) {
+            if (addedGrass >= amount) {
+                break;
+            }
+            this.grasses.put(currPos, new Grass(currPos));
             addedGrass++;
         }
     }
+
+//    protected void growGrassOn(Set<Vector2d> positions, double amount){
+//        Collections.shuffle(positions);
+//        //3. add grass to first 80%*grassAmount or maximum possible grass spaces
+//        Iterator<Vector2d> positionsIterator = positions.iterator();
+//        int addedGrass = 0;
+//        while (positionsIterator.hasNext() && addedGrass < amount){
+//            Vector2d currPos = positionsIterator.next();
+//            this.grasses.put(currPos,new Grass(currPos));
+//            addedGrass++;
+//        }
+//    }
 
 }

@@ -25,9 +25,9 @@ public class FunkyMap extends EarthMap{
         Boundary bound = getMapBoundary();
 
         //more popular positions
-        ArrayList<Vector2d> junglePositions = generatePreferredGrassSpaces();
+        Set<Vector2d> junglePositions = generatePreferredGrassSpaces();
 
-        ArrayList<Vector2d> steppesPositions = new ArrayList<>();
+        Set<Vector2d> steppesPositions = new HashSet<>();
         for(int x = bound.bottomLeft().x(); x < bound.upperRight().x(); x++){
             for(int y = bound.bottomLeft().y(); y < bound.upperRight().y(); y++){
                 Vector2d currPos = new Vector2d(x,y);
@@ -47,10 +47,10 @@ public class FunkyMap extends EarthMap{
     }
 
     @Override
-    public ArrayList<Vector2d> generatePreferredGrassSpaces() {
+    public Set<Vector2d> generatePreferredGrassSpaces() {
         if(this.grasses.isEmpty()){ return super.generatePreferredGrassSpaces(); }
         //just bruteforce it
-        ArrayList<Vector2d> junglePositions = new ArrayList<>();
+        Set<Vector2d> junglePositions = new HashSet<>();
         for(int x = this.mapBoundary.bottomLeft().x(); x <= this.mapBoundary.upperRight().x(); x++){
             for(int y = this.mapBoundary.bottomLeft().y(); y <= this.mapBoundary.upperRight().y(); y++){
                 Vector2d currPos = new Vector2d(x,y);
