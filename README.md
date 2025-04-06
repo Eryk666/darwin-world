@@ -7,7 +7,7 @@ course at AGH University of Kraków.
 
 To run Darwin World, you'll need Java 17 or higher.
 
-1. **Run the app using the Gradle wrapper**:
+1. **Run the app using the Gradle**:
 ```bash
    ./gradlew run
 ```
